@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'libraryapp/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Genel container */
+        .form-container {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 500px;
+            margin: 40px auto;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.2);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #28a745, #218838);
+            border-radius: 2px;
+        }
+
+        /* Buton tasarımı */
+        .login-btn {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            padding: 14px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-btn i {
+            margin-right: 10px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: scale(1.03);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Form alanları */
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group input {
+            padding: 12px 40px 12px 15px;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-group input:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+            background: #fff;
+        }
+
+        .input-group input::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #28a745;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .input-group:hover i {
+            color: #218838;
+        }
+
+        /* Hata mesajları */
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        /* Bilgi mesajları */
+        .alert-info {
+            background: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        /* Linkler */
+        .register-link,
+        .forgot-password a {
+            color: #28a745;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .register-link:hover,
+        .forgot-password a:hover {
+            color: #1e7e34;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        /* Animasyonlar */
+        .input-group {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobil uyumluluk */
+        @media (max-width: 576px) {
+            .form-container {
+                padding: 30px;
+                margin: 20px;
+            }
+            .form-title {
+                font-size: 1.6rem;
+            }
+            .login-btn {
+                font-size: 1rem;
+                padding: 12px;
+            }
+            .input-group input {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-6">
+        <div class="form-container">
+            <h1 class="form-title">Madbook Kütüphanesine Giriş Yap</h1>
+            <hr>
+
+            <!-- Mesajlar -->
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Form Hataları -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ field.label }}: {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <input type="text" class="form-control" name="username" placeholder="Kullanıcı Adı" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            
+                <div class="input-group">
+                    <input type="password" class="form-control" name="password" placeholder="Şifre" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            
+                <button type="submit" class="btn login-btn">
+                    <i class="fa-solid fa-sign-in-alt"></i> Giriş Yap
+                </button>
+            </form>
+            
+            <div class="form-footer">
+                <p class="forgot-password">
+                    <a href="{% url 'sifre_sifirlama_talebi' %}">Şifremi Unuttum</a>
+                </p>
+                <p>Hesabın yok mu? <a href="{% url 'user_register' %}" class="register-link">Kayıt Ol</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_files %}
+    <script src="{% static 'libraryapp/js/script.js' %}"></script>
+{% endblock %}

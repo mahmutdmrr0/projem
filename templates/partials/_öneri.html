@@ -1,0 +1,93 @@
+<!-- Önerilen Kitaplar -->
+<div class="recommended-books container my-5">
+    <h2 class="recommended-title">Önerilen Kitaplar</h2>
+
+    {% if grouped_recommended_books %}
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for group in grouped_recommended_books %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row">
+                            {% for book in group %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card book-card recommended-card shadow-lg">
+                                        <img src="{{ book.image }}" class="card-img-top" alt="{{ book.title }}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                {{ book.title }}
+                                                <!-- Önerilen Kitap İkonu -->
+                                                <i class="fas fa-heart text-danger ms-2" title="Önerilen Kitap"></i>
+                                            </h5>
+                                            <p class="card-text text-muted">Yazar: {{ book.author }}</p>
+                                            <a href="{% url 'details' book.id %}" class="btn recommended-btn w-100">Detayları Gör</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center mt-4">
+            📌 Önerilen kitaplar henüz mevcut değil. Algoritma çalışmaya başladıkça burası güncellenecek!
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    /* === Önerilen Kitaplar Mavi Tema === */
+    .recommended-title {
+        font-size: 36px;
+        font-weight: bold;
+        background: linear-gradient(90deg, #007bff, #0056b3, #003366);
+        -webkit-background-clip: text;
+        color: transparent;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    /* Kart Border ve Hover Efekti */
+    .recommended-card {
+        border: 3px solid #007bff; /* Mavi border */
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .recommended-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(0, 123, 255, 0.8); /* Mavi gölge efekti */
+    }
+
+    /* Buton */
+    .recommended-btn {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        border-radius: 25px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .recommended-btn:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    /* Hover efekti için kart resmi */
+    .recommended-card img:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+
+    /* Uyarı Mesajı */
+    .alert-warning {
+        font-size: 1.2rem;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+</style>

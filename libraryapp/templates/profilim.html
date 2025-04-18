@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'libraryapp/css/style.css' %}">
+    <style>
+        /* Genel Container */
+        .profile-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        /* Ortak Panel Stili */
+        .panel {
+            background: #e9f5e9;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(34, 139, 34, 0.2);
+            padding: 25px;
+            border: 2px solid #218838;
+            transition: transform 0.3s ease;
+        }
+        .panel:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Profil Bilgileri */
+        .profile-info {
+            text-align: center;
+        }
+        .profile-pic {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 4px solid #28a745;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .profile-pic:hover {
+            transform: scale(1.1);
+        }
+        h1, h2 {
+            color: #166534;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(22, 101, 52, 0.2);
+        }
+        p {
+            font-size: 16px;
+            color: #155724;
+            margin: 10px 0;
+        }
+
+        /* Formlar */
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            font-size: 14px;
+            color: #166534;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #218838;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f0fff4;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+        }
+        .form-group input:focus + label,
+        .form-group textarea:focus + label,
+        .form-group select:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            color: #28a745;
+            background: #e9f5e9;
+            padding: 0 5px;
+        }
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Fotoğraf Yükleme Alanı */
+        .photo-upload-container {
+            position: relative;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .photo-upload-area {
+            border: 2px dashed #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f0fff4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .photo-upload-area.dragover {
+            background: #d4edda;
+            border-color: #218838;
+        }
+        .photo-upload-area:hover {
+            background: #d4edda;
+        }
+        .photo-upload-area label {
+            display: block;
+            font-size: 18px;
+            color: #166534;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .photo-upload-area input[type="file"] {
+            display: none;
+        }
+        .photo-upload-icon {
+            font-size: 40px;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        .photo-preview {
+            margin-top: 15px;
+            display: none;
+        }
+        .photo-preview img {
+            max-width: 120px;
+            border-radius: 8px;
+            border: 2px solid #28a745;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .photo-preview img:hover {
+            transform: scale(1.1);
+        }
+        .remove-photo-btn {
+            display: block;
+            margin: 10px auto 0;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .remove-photo-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Modal Stili */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            width: 300px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 24px;
+            color: #155724;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Butonlar */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+            border: 2px solid #218838;
+        }
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+            border: 2px solid #c82333;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        .save-btn button {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+        }
+
+        /* Arama Formu */
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-form input {
+            flex-grow: 1;
+            border: 1px solid #218838;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* Liste Stili */
+        .user-list,
+        .recommended-books ul {
+            list-style: none;
+            padding: 0;
+            max-height: 250px;
+            overflow-y: auto;
+            margin: 0;
+        }
+        .user-list li,
+        .recommended-books li {
+            padding: 12px;
+            border-bottom: 1px solid #d4edda;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        .user-list li:last-child,
+        .recommended-books li:last-child {
+            border-bottom: none;
+        }
+        .user-list li:hover,
+        .recommended-books li:hover {
+            background: #f0fff4;
+        }
+        .recommended-books img {
+            max-width: 60px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .recommended-books .sender-info {
+            font-size: 14px;
+            color: #166534;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Durum Göstergesi */
+        .status-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .status-circle.active {
+            background: #28a745;
+        }
+        .status-circle.inactive {
+            background: #dc3545;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .page-num a,
+        .page-num span {
+            padding: 8px 15px;
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .page-num a:hover {
+            background: #28a745;
+            color: #fff;
+        }
+        .page-num.disabled span {
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* Animasyon */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            .profile-info,
+            .profile-update,
+            .active-users,
+            .friend-requests {
+                width: 100%;
+            }
+        }
+
+        /* Badge Stili */
+        .chat-btn {
+            position: relative;
+        }
+        .unread-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            display: none;
+        }
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-circle.active {
+            background-color: green;
+        }
+        .status-circle.inactive {
+            background-color: red;
+        }
+    </style>
+{% endblock %}
+{% block page_title %}
+     Profilim
+{% endblock %}
+
+{% block content %}
+    <div class="profile-container">
+        <!-- Profilim -->
+        <div class="panel profile-info">
+            <h1>Profilim</h1>
+            {% if user.userprofile.profile_picture %}
+                <img src="{{ user.userprofile.profile_picture.url }}" alt="Profil Fotoğrafı" class="profile-pic" onclick="showModal('{{ user.userprofile.profile_picture.url }}')">
+            {% else %}
+                <img src="{% static 'libraryapp/images/default_profile.png' %}" alt="Varsayılan Fotoğraf" class="profile-pic" onclick="showModal('{% static 'libraryapp/images/default_profile.png' %}')">
+            {% endif %}
+            <p><strong>Ad:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>E-Posta:</strong> {{ user.email }}</p>
+            <p><strong>Biyografi:</strong> {{ user.userprofile.bio|default:"Biyografi eklenmemiş." }}</p>
+            <p><strong>Toplam Kullanıcı:</strong> {{ total_users }}</p>
+            <p><strong>Aktif Kullanıcı:</strong> {{ active_users.count }}</p>
+        </div>
+
+        <!-- Profilimi Güncelle -->
+        <div class="panel profile-update">
+            <h2>Profilimi Güncelle</h2>
+            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                {% csrf_token %}
+                {% for field in form %}
+                    {% if field.name != "profile_picture" %}
+                        <div class="form-group">
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="photo-upload-container">
+                    <div class="photo-upload-area" id="photo-upload-area">
+                        <label>Fotoğraf Yükle</label>
+                        <span class="photo-upload-icon">📸</span>
+                        <p>Sürükle & bırak veya tıkla</p>
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+                    </div>
+                    <div class="photo-preview" id="photo-preview">
+                        <img id="preview-image" src="" alt="Önizleme">
+                        <button type="button" class="remove-photo-btn" id="remove-photo-btn">Kaldır</button>
+                    </div>
+                </div>
+                <div class="save-btn">
+                    <button type="submit" class="btn btn-success">💾 Kaydet</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal -->
+        <div id="photoModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="hideModal()">×</span>
+                <img id="modalImage" src="" alt="Profil Fotoğrafı">
+            </div>
+        </div>
+
+                <!-- Aktif Kullanıcılar -->
+        <div class="panel active-users">
+            <h2>Aktif Kullanıcılar</h2>
+            <div class="search-form">
+                <form method="GET">
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="Kullanıcı ara...">
+                    <button type="submit" class="btn btn-success">🔍 Ara</button>
+                </form>
+            </div>
+            <ul class="user-list">
+                {% for u in users_page %}
+                    <li>
+                        <span>{{ u.username }}</span>
+                        <div>
+                            <span class="status-circle active"></span>
+                            <a href="{% url 'user_profile' u.username %}" class="btn btn-success">👤 Profil</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>Şu anda aktif kullanıcı yok.</li>
+                {% endfor %}
+            </ul>
+            <!-- Sayfalama -->
+            <div class="pagination">
+                <span class="page-num {% if not active_users_page.has_previous %}disabled{% endif %}">
+                    {% if active_users_page.has_previous %}
+                        <a href="?page_active={{ active_users_page.previous_page_number }}&q={{ search_query }}">Önceki</a>
+                    {% else %}
+                        <span>Önceki</span>
+                    {% endif %}
+                </span>
+                <span class="page-num">
+                    Sayfa {{ active_users_page.number }} / {{ active_users_page.paginator.num_pages }}
+                </span>
+                <span class="page-num {% if not active_users_page.has_next %}disabled{% endif %}">
+                    {% if active_users_page.has_next %}
+                        <a href="?page_active={{ active_users_page.next_page_number }}&q={{ search_query }}">Sonraki</a>
+                    {% else %}
+                        <span>Sonraki</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Arkadaşlık İstekleri ve Önerilen Kitaplar -->
+        <div class="panel friend-requests">
+            <h2>Arkadaşlık İstekleri</h2>
+            <ul class="user-list">
+                {% for req in friend_requests|slice:":5" %}
+                    <li>
+                        <span>{{ req.sender.username }}'dan istek</span>
+                        <div>
+                            <a href="{% url 'manage_friend_request' req.id 'accept' %}" class="btn btn-success">✅ Kabul</a>
+                            <a href="{% url 'manage_friend_request' req.id 'reject' %}" class="btn btn-danger">❌ Reddet</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>Yeni istek yok.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Arkadaşlarım</h2>
+            <ul class="user-list">
+                {% for friend in friends|slice:":5" %}
+                    <li>
+                        <span>{{ friend.username }}</span>
+                        <div>
+                            <a href="{% url 'user_profile' friend.username %}" class="btn btn-success">👤 Profil</a>
+                            <a href="{% url 'send_message' friend.username %}" class="btn btn-success chat-btn" data-username="{{ friend.username }}">
+                                💬 Sohbet Et
+                                <span class="unread-badge" id="badge-{{ friend.username }}"></span>
+                            </a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>Henüz arkadaşınız yok.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Bana Önerilen Kitaplar</h2>
+            <div class="recommended-books">
+                <ul>
+                    {% for rec_book in recommended_to_me %}
+                        <li>
+                            <strong>{{ rec_book.title }}</strong> - {{ rec_book.author }}
+                            {% if rec_book.sender %}
+                                <div class="sender-info">Öneren: {{ rec_book.sender.username }}</div>
+                            {% endif %}
+                            {% if rec_book.image %}
+                                <br><img src="{{ rec_book.image }}" alt="{{ rec_book.title }}">
+                            {% endif %}
+                            {% if rec_book.info_link %}
+                                <br><a href="{{ rec_book.info_link }}" target="_blank">Daha Fazla Bilgi</a>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>Henüz öneri yok.</li>
+                    {% endfor %}
+                </ul>
+                <!-- Sayfalama -->
+                <div class="pagination">
+                    <span class="page-num {% if not recommended_to_me.has_previous %}disabled{% endif %}">
+                        {% if recommended_to_me.has_previous %}
+                            <a href="?page={{ recommended_to_me.previous_page_number }}">Önceki</a>
+                        {% else %}
+                            <span>Önceki</span>
+                        {% endif %}
+                    </span>
+                    <span class="page-num">
+                        Sayfa {{ recommended_to_me.number }} / {{ recommended_to_me.paginator.num_pages }}
+                    </span>
+                    <span class="page-num {% if not recommended_to_me.has_next %}disabled{% endif %}">
+                        {% if recommended_to_me.has_next %}
+                            <a href="?page={{ recommended_to_me.next_page_number }}">Sonraki</a>
+                        {% else %}
+                            <span>Sonraki</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_files %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.getElementById('profile_picture');
+        const uploadArea = document.getElementById('photo-upload-area');
+        const preview = document.getElementById('photo-preview');
+        const previewImage = document.getElementById('preview-image');
+        const removeBtn = document.getElementById('remove-photo-btn');
+
+        // Fotoğraf yükleme (tıklama ve sürükle-bırak)
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+            handleFileChange();
+        });
+
+        fileInput.addEventListener('change', handleFileChange);
+
+        function handleFileChange() {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // Fotoğraf kaldırma
+        removeBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            preview.style.display = 'none';
+        });
+
+        // Modal açma fonksiyonu
+        window.showModal = function(imageSrc) {
+            const modal = document.getElementById('photoModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex';
+        };
+
+        // Modal kapatma fonksiyonu
+        window.hideModal = function() {
+            const modal = document.getElementById('photoModal');
+            modal.style.display = 'none';
+        };
+
+        // Modal dışı tıklama ile kapatma
+        window.onclick = function(event) {
+            const modal = document.getElementById('photoModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Badge Güncelleme
+        function updateChatBadges() {
+            fetch("{% url 'get_notifications' %}", {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                cache: 'no-store'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Badge Data:", data);
+                document.querySelectorAll('.chat-btn').forEach(btn => {
+                    const username = btn.getAttribute('data-username');
+                    const badge = document.getElementById(`badge-${username}`);
+                    const unreadCount = data.notifications.filter(n => n.sender === username).length;
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                });
+            })
+            .catch(error => console.error('Badge güncelleme hatası:', error));
+        }
+
+        updateChatBadges();
+        setInterval(updateChatBadges, 5000);
+
+        document.querySelectorAll('.chat-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                updateChatBadges();
+            });
+        });
+    });
+</script>
+{% endblock %}

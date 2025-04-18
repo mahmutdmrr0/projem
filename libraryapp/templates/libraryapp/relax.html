@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: url("https://source.unsplash.com/1600x900/?nature,forest,calm") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Georgia', serif;
+            color: #fff;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 0 15px;
+        }
+
+        .navbar a:hover {
+            color: #81c784;
+        }
+
+        .relax-container {
+            min-height: calc(100vh - 100px); /* Navbar ve footer için yer */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            text-align: center;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 650px;
+            margin: 80px auto 40px; /* Navbar ve footer için boşluk */
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3); /* Transparan arka plan */
+            padding: 15px;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            z-index: 100;
+            backdrop-filter: blur(5px); /* Hafif bulanıklık efekti */
+        }
+
+        .control-button, .skip-button {
+            margin: 10px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, rgba(129, 199, 132, 0.8), rgba(100, 181, 246, 0.8));
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button:hover, .skip-button:hover {
+            background: linear-gradient(135deg, rgba(100, 181, 246, 1), rgba(129, 199, 132, 1));
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-control select {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timer-control select:hover {
+            background: rgba(129, 199, 132, 0.5);
+        }
+
+        .animation {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5), rgba(129, 199, 132, 0.3));
+            border-radius: 50%;
+            position: relative;
+            animation: pulse 3s infinite ease-in-out;
+            margin: 25px 0;
+            box-shadow: 0 0 25px rgba(129, 199, 132, 0.6);
+        }
+
+        .animation::after {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 4s infinite ease-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0.8); opacity: 0.6; }
+            100% { transform: scale(1.7); opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tip {
+            font-size: 20px;
+            margin-top: 25px;
+            color: #dcedc8;
+            font-style: italic;
+            animation: fadeIn 3s ease-in;
+            max-width: 80%;
+        }
+
+        .volume-control, .timer-control {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #e0f7fa;
+            font-size: 18px;
+        }
+
+        .volume-control input[type="range"] {
+            accent-color: #81c784;
+            width: 150px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .relax-container {
+                margin: 70px 20px 40px;
+                padding: 20px;
+                max-width: 90%;
+            }
+            
+            .control-button, .skip-button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+
+            .navbar {
+                padding: 10px 15px;
+            }
+
+            .navbar a {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+
+            .footer {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block page_title %}Huzurlu Dinlenme Molası{% endblock %}
+
+{% block content %}
+    <video autoplay loop muted playsinline id="background-video" aria-hidden="true">
+        <source src="{% static 'video/video.mp4' %}" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+
+    <div class="relax-container">
+        <h1>Doğayla Huzur Bulun</h1>
+        <p>Ruhunuzu dinlendirin, doğayı hissedin...</p>
+        <p class="countdown" id="countdown">2:00</p>
+        <div class="animation"></div>
+        <p class="tip">"Derin nefes alın ve anın tadını çıkarın."</p>
+        
+        <button class="control-button" onclick="toggleAudio()">Sesi Başlat/Durdur</button>
+        <button class="control-button" onclick="toggleTimer()">Molayı Duraklat/Devam Et</button>
+        <button class="skip-button" onclick="skipBreak()">Molayı Bitir</button>
+        
+        <div class="volume-control">
+            <label for="volume">Ses Seviyesi:</label>
+            <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5" onchange="setVolume(this.value)">
+        </div>
+        <div class="timer-control">
+            <label for="timer-select">Mola Süresi:</label>
+            <select id="timer-select" onchange="setTimer(this.value)">
+                <option value="60">1 Dakika</option>
+                <option value="120" selected>2 Dakika</option>
+                <option value="180">3 Dakika</option>
+                <option value="300">5 Dakika</option>
+            </select>
+        </div>
+        
+        <audio id="nature-sound" loop>
+            <source src="https://www.orangefreesounds.com/wp-content/uploads/2015/07/Free-nature-sounds.mp3" type="audio/mpeg">
+            <source src="{% static 'audio/nature-sounds.mp3' %}" type="audio/mpeg">
+            Tarayıcınız ses dosyasını desteklemiyor.
+        </audio>
+    </div>
+
+    
+{% endblock %}
+
+{% block js_files %}
+<script>
+    let timeLeft = 120;
+    let countdownEl = document.getElementById("countdown");
+    let timer;
+    let isPaused = false;
+    let natureAudio = document.getElementById("nature-sound");
+    let isPlaying = false;
+
+    function formatTime(seconds) {
+        let mins = Math.floor(seconds / 60);
+        let secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' + secs : secs}`;
+    }
+
+    function startTimer() {
+        if (timer) clearInterval(timer);
+        timer = setInterval(function() {
+            if (!isPaused) {
+                timeLeft--;
+                countdownEl.innerText = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    natureAudio.pause();
+                    window.location.href = "{{ request.META.HTTP_REFERER|default:'/' }}";
+                }
+            }
+        }, 1000);
+    }
+
+    function setTimer(seconds) {
+        timeLeft = parseInt(seconds);
+        countdownEl.innerText = formatTime(timeLeft);
+        if (!isPaused) startTimer();
+    }
+
+    countdownEl.innerText = formatTime(timeLeft);
+    startTimer();
+
+    function skipBreak() {
+        clearInterval(timer);
+        natureAudio.pause();
+        window.location.href = "{{ request.META.HTTP_REFERER|default:'/' }}";
+    }
+
+    function toggleTimer() {
+        isPaused = !isPaused;
+        if (!isPaused) startTimer();
+        else clearInterval(timer);
+        console.log("Zamanlayıcı:", isPaused ? "Duraklatıldı" : "Devam ediyor");
+    }
+
+    function toggleAudio() {
+        if (isPlaying) {
+            natureAudio.pause();
+            console.log("Ses durduruldu");
+        } else {
+            natureAudio.play().then(() => {
+                console.log("Doğa sesi çalıyor");
+            }).catch(error => {
+                console.error("Doğa sesi çalma hatası:", error);
+            });
+        }
+        isPlaying = !isPlaying;
+    }
+
+    function setVolume(value) {
+        natureAudio.volume = value;
+        console.log("Ses seviyesi:", value);
+    }
+
+    setVolume(0.5);
+
+    window.onload = function() {
+        console.log("Doğa sesi URL:", natureAudio.src);
+    };
+</script>
+{% endblock %}

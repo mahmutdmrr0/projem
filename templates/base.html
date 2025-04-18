@@ -1,0 +1,428 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/messages.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/trans1.png' %}" sizes="128x128">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    {% block css_files %}{% endblock %}
+    <title>MADBOOK |  {% block page_title %}{% endblock %}</title>
+
+
+    <style>
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        }
+        .loading-container.hidden {
+            visibility: hidden;
+            opacity: 0;
+        }
+        .loading-container img {
+            max-width: 100px;
+        }
+        body {
+            background-color: #F5F5DC !important;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .popular-title, .recommended-title {
+            font-family: 'Poppins', sans-serif;
+            color: #343a40;
+            font-size: 3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #343a40;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .popular-title {
+            background: linear-gradient(90deg, #28a745, #004d00, #00b300);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .recommended-title {
+            background: linear-gradient(90deg, #007bff, #0056b3, #003366);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .book-card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            background-color: #f0e5d8;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        .book-card .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            border-radius: 20px 20px 0 0;
+        }
+        .book-card .card-body {
+            padding: 20px;
+            background-color: #f3e1c7;
+            border-radius: 0 0 20px 20px;
+        }
+        .book-card .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .book-card .card-text {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .btn {
+            border-radius: 30px;
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+            padding: 10px 30px;
+        }
+        .btn:hover {
+            text-decoration: none;
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #0056b3;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #003366;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #004d00;
+        }
+        .btn-success:hover {
+            background-color: #004d00;
+            border-color: #003300;
+        }
+        .btn-warning {
+            background-color: #f1c40f;
+            border-color: #f39c12;
+        }
+        .btn-warning:hover {
+            background-color: #f39c12;
+            border-color: #e67e22;
+        }
+        .hero-section {
+            width: 100%;
+            height: 600px;
+            background: url("{% static 'img/jpg.2.jpeg' %}") no-repeat center center/cover;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .overlay {
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .slide-container {
+            max-width: 900px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            border-radius: 0 0 30px 30px;
+        }
+        .content {
+            margin-top: 80px;
+        }
+        footer {
+            margin-top: auto;
+            background-color: #f1e4b2;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .carousel-inner {
+            padding: 10px;
+        }
+        .dropdown-item.active {
+            color: #fff !important;
+            background: linear-gradient(90deg, #28a745, #218838);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        .dropdown-item:hover {
+            background-color: #28a745;
+            color: white;
+        }
+        /* Bildirim Popup Stili */
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            padding: 10px;
+        }
+        .notification-item {
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+            background: rgba(255, 255, 255, 0.9);
+            color: #155724;
+            font-size: 14px;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .notification-item small {
+            display: block;
+            color: #adb5bd;
+            margin-top: 5px;
+        }
+        .notif-link {
+            display: inline-block;
+            margin-top: 5px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .notif-link:hover {
+            color: #218838;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Mesaj Kutusu Stili */
+        .message-box {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+        }
+        .message-box-content {
+            max-width: 300px;
+        }
+        #close-message {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        /* Navbar Bildirim Stili */
+        .navbar-notif {
+            position: relative;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .notif-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container hidden">
+        <img src="{% static 'img/Animasyon.gif' %}" alt="Yükleniyor..." />
+    </div>
+    {% include "partials/_nav.html" %}
+    <!-- Mesaj Kutusu -->
+    <div id="message-box" class="message-box" style="display: none;">
+        <div class="message-box-content">
+            <p id="message-text"></p>
+            <button id="close-message">Kapat</button>
+        </div>
+    </div>
+    {% include "partials/_messages.html" %}
+    <div class="content">
+        {% block content %}
+        {% include "partials/_slayt.html" %}   
+        {% include "partials/_popüler.html" %}   
+        {% include "partials/_öneri.html" %}   
+        {% include "partials/_begeni.html" %}
+        {% include "partials/_bedava.html" %}
+        {% endblock %}
+    </div>
+    {% include "partials/_footer.html" %}
+
+    <!-- Navbar Bildirim Simgesi (Eğer _nav.html içinde eklenmediyse buraya koyabilirsin) -->
+    <!-- Örnek: <div class="navbar-notif"><span id="notif-icon" class="notif-icon">🔔</span><span id="notif-badge" class="notif-badge" style="display: none;"></span></div> -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const notificationPopup = document.getElementById('notification-popup');
+            const notificationContent = document.getElementById('notification-content');
+            const loadingContainer = document.querySelector('.loading-container');
+            const notifBadge = document.getElementById('notif-badge');
+            const messageBox = document.getElementById('message-box');
+            const messageText = document.getElementById('message-text');
+            const closeMessage = document.getElementById('close-message');
+            let lastCount = 0; // Son bildirim sayısını takip et
+
+            // Bildirimleri kontrol eden fonksiyon
+            function checkNotifications() {
+                fetch("{% url 'get_notifications' %}", {
+                    method: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    cache: 'no-store'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Notifications:", data);
+                    const unreadCount = data.notifications ? data.notifications.length : 0;
+
+                    // Popup Güncellemesi
+                    if (unreadCount > 0) {
+                        notificationContent.innerHTML = '';
+                        data.notifications.forEach(notif => {
+                            const notifDiv = document.createElement('div');
+                            notifDiv.classList.add('notification-item', 'fade-in');
+                            const messageUrl = `/library/message/${encodeURIComponent(notif.sender)}/`;
+                            notifDiv.innerHTML = `
+                                <strong>${notif.sender}</strong>: ${notif.content} 
+                                <small>${notif.created_at}</small>
+                                <a href="${messageUrl}" class="notif-link">Cevapla</a>
+                            `;
+                            notificationContent.appendChild(notifDiv);
+                        });
+                        notificationPopup.style.display = 'block';
+                    } else {
+                        notificationPopup.style.display = 'none';
+                        notificationContent.innerHTML = '';
+                    }
+
+                    // Navbar Badge Güncellemesi
+                    if (unreadCount > 0) {
+                        notifBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                        notifBadge.style.display = 'inline-block';
+                    } else {
+                        notifBadge.style.display = 'none';
+                    }
+
+                    // Yeni mesaj geldiğinde mesaj kutusu göster
+                    if (unreadCount > lastCount && unreadCount > 0) {
+                        const latestNotif = data.notifications[data.notifications.length - 1];
+                        messageText.textContent = `${latestNotif.sender}: ${latestNotif.content}`;
+                        messageBox.style.display = 'block';
+                    }
+                    lastCount = unreadCount;
+                })
+                .catch(error => console.error('Bildirim hatası:', error));
+            }
+
+            // İlk yüklemede ve her 5 saniyede bir kontrol
+            checkNotifications();
+            setInterval(checkNotifications, 5000);
+
+            // "Cevapla" linkine tıklayınca anında kontrol et
+            document.addEventListener('click', function(e) {
+                const notifLink = e.target.closest('.notif-link');
+                if (notifLink) {
+                    checkNotifications();
+                }
+            });
+
+            // Mesaj kutusunu kapatma
+            closeMessage.addEventListener('click', function() {
+                messageBox.style.display = 'none';
+            });
+
+            // Loading animasyonu: Sayfa yüklendiğinde göster
+            loadingContainer.classList.remove('hidden');
+            console.log("Loading gösteriliyor");
+        });
+
+        // Sayfa tamamen yüklendiğinde loading gizle
+        window.addEventListener("load", function() {
+            const loadingContainer = document.querySelector('.loading-container');
+            setTimeout(() => {
+                loadingContainer.classList.add('hidden');
+                console.log("Loading gizlendi");
+            }, 1000);
+        });
+
+        // Önbellekten yüklenirse loading gizle
+        window.addEventListener("pageshow", function(event) {
+            const loadingContainer = document.querySelector('.loading-container');
+            if (event.persisted) {
+                loadingContainer.classList.add('hidden');
+                console.log("Sayfa önbellekten yüklendi, loading gizlendi");
+            }
+        });
+
+        // Geri tuşuna basıldığında loading gizle
+        window.addEventListener("popstate", function() {
+            const loadingContainer = document.querySelector('.loading-container');
+            loadingContainer.classList.add('hidden');
+            console.log("Geri tuşuna basıldı, loading gizlendi");
+        });
+
+        // Linke tıklanınca loading göster
+        document.addEventListener("click", function(e) {
+            const link = e.target.closest('a');
+            if (link && link.href && !link.href.includes('#')) {
+                const loadingContainer = document.querySelector('.loading-container');
+                loadingContainer.classList.remove('hidden');
+                console.log("Linke tıklandı, loading gösteriliyor");
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block js_files %}{% endblock %}
+</body>
+</html>

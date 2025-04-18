@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_title %}
+     Arama Motoru
+{% endblock %}
+
+{% block css_files %}
+<style>
+    .search-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: 2px solid #28a745;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .card-body {
+        background-color: #f4e1d2;
+        padding: 15px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: center; /* Center align the button */
+        margin-top: 15px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        border-radius: 20px;
+        padding: 8px 16px;
+        transition: 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-secondary {
+        display: block;
+        width: max-content;
+        margin: 30px auto;
+        border-radius: 25px;
+        padding: 12px 24px;
+    }
+
+    .btn-secondary {
+        background-color: #28a745;
+        border-color: #28a745;
+        border-radius: 20px;
+        padding: 8px 16px;
+        transition: 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #218838;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="search-container">
+        <h1 class="mb-4">"{{ query }}" İçin Arama Sonuçları</h1>
+    </div>
+    
+    {% if results %}
+        <div class="row">
+            {% for book in results %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ book.image }}" class="card-img-top" alt="{{ book.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text"><strong>Yazar:</strong> {{ book.author }}</p>
+                            <p class="card-text"><strong>Yayın Tarihi:</strong> {{ book.publishedDate }}</p>
+                            <div class="btn-container">
+                                <a href="{% url 'details' book.id %}" class="btn btn-success">Detay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-danger">"{{ query }}" ile eşleşen kitap bulunamadı.</p>
+    {% endif %}
+    
+    <a href="{% url 'index' %}" class="btn btn-secondary">Ana Sayfaya Dön</a>
+</div>
+{% endblock %}

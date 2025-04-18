@@ -1,0 +1,76 @@
+<!-- Popüler Kitaplar -->
+<div class="popular-books container my-5">
+    <h2 class="popular-title">Ayın Popüler Kitapları</h2>
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for group in grouped_popular_books %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row">
+                        {% for book in group %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card book-card popular-card shadow-lg">
+                                    <img src="{{ book.image }}" class="card-img-top" alt="{{ book.title }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            {{ book.title }}
+                                            <!-- Güncel İkonu Ekleniyor -->
+                                            <i class="fas fa-trophy text-warning ms-2" title="Güncel Kitap"></i>
+                                        </h5>
+                                        <p class="card-text text-muted">Yazar: {{ book.author }}</p>
+                                        <a href="{% url 'details' book.id %}" class="btn popular-btn w-100">Detayları Gör</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* === Popüler Kitaplar Yeşil Tema === */
+    .popular-title {
+        font-size: 36px;
+        font-weight: bold;
+        background: linear-gradient(90deg, #28a745, #004d00, #00b300);
+        -webkit-background-clip: text;
+        color: transparent;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    /* Kart Border ve Hover Efekti */
+    .popular-card {
+        border: 3px solid #28a745; /* Yeşil border */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .popular-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(40, 167, 69, 0.8); /* Yeşil gölge efekti */
+    }
+    
+    /* Buton */
+    .popular-btn {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        border-radius: 25px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .popular-btn:hover {
+        background-color: #218838;
+        border-color: #218838;
+        transform: scale(1.05);
+    }
+    
+    /* Hover efekti için animasyon */
+    .popular-card img:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+
+</style>

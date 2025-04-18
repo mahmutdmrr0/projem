@@ -1,0 +1,165 @@
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Hakkında Bölümü -->
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">Madbook Hakkında</h5>
+                <p>
+                    <a href="{% url 'hakkında' %}" class="text-decoration-none glowing-link">
+                        Proje kullanımı ve proje hakkında bilgi almak istiyorsanız lütfen bu yazı bölümüne tıklayınız...
+                    </a>
+                </p>
+            </div>
+
+            <!-- İletişim Bölümü -->
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">İletişim</h5>
+                <ul class="list-unstyled">
+                    <li>Email: 
+                        <a href="mailto:mahmut.demir0024@gmail.com" class="text-white email-hover glowing-link">
+                            mahmut.demir0024@gmail.com
+                        </a>
+                    </li>
+                    <li>Telefon: 
+                        <span class="glowing-text">123-456-7890</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Sosyal Medya Bölümü -->
+            <div class="col-md-4 text-center">
+                <h5 class="footer-heading">Sosyal Medya</h5>
+                <ul class="list-unstyled d-flex justify-content-center">
+                    <li class="mx-3">
+                        <a href="https://www.linkedin.com" target="_blank" class="text-white social-icon glowing-link">
+                            <i class="fab fa-linkedin fa-2x"></i>
+                        </a>
+                    </li>
+                    <li class="mx-3">
+                        <a href="https://www.facebook.com/profile.php?id=100009070593071" target="_blank" class="text-white social-icon glowing-link">
+                            <i class="fab fa-facebook fa-2x"></i>
+                        </a>
+                    </li>
+                    <li class="mx-3">
+                        <a href="https://www.instagram.com/mahmut_dmrr0?igsh=MXF2ZzEwdmo3eHhpaw==" target="_blank" class="text-white social-icon glowing-link">
+                            <i class="fab fa-instagram fa-2x"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Telif Hakkı Bölümü -->
+        <div class="row">
+            <div class="col-md-12 text-center mt-4">
+                <p>Bu sitedeki kitap bilgileri Google Books API ve Project Gutenberg (Gutendex) üzerinden sağlanmaktadır. Telif hakları ilgili sahiplerine aittir. Kullanıcı yorumlarında telif hakkına tabi materyallerin paylaşılması yasaktır ve bu tür içeriklerden kullanıcılar sorumludur.</p> 
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Font Awesome (Sosyal medya ikonları için gerekli) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+<!-- Stil Düzenlemeleri -->
+<style>
+    /* Footer başlıkları için hover efekti */
+    .footer-heading {
+        position: relative;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #f1c40f; /* Sarı renk */
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .footer-heading:hover {
+        color: #f39c12; /* Daha koyu sarı ton */
+        text-shadow: 0px 0px 10px rgba(241, 196, 15, 0.7); /* Parlayan efekt */
+    }
+
+    /* Sosyal medya ikonları için hover efekti */
+    .social-icon {
+        transition: transform 0.3s ease, color 0.3s ease, filter 0.3s ease;
+    }
+
+    .social-icon:hover {
+        color: #f1c40f !important; /* Sarı renk */
+        transform: scale(1.3); /* Büyüme efekti */
+        filter: brightness(1.2); /* Parlaklık artışı */
+        text-shadow: 0px 0px 10px rgba(241, 196, 15, 0.7); /* Parlayan efekt */
+    }
+
+    /* Email ve Telefon için hover efekti */
+    .email-hover, .glowing-text {
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .email-hover:hover, .glowing-text:hover {
+        color: #f1c40f !important; /* Sarı renk */
+        text-shadow: 0px 0px 10px rgba(241, 196, 15, 0.7); /* Parlayan efekt */
+    }
+
+    /* Linkler için hover efekti */
+    .glowing-link {
+        position: relative;
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .glowing-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        background: #f1c40f; /* Alt çizgi sarı renk */
+        bottom: -5px;
+        left: 0;
+        transition: width 0.3s ease;
+    }
+
+    .glowing-link:hover::after {
+        width: 100%; /* Hover’da alt çizgi genişler */
+    }
+
+    .glowing-link:hover {
+        color: #f1c40f; /* Sarı renk */
+        text-shadow: 0px 0px 10px rgba(241, 196, 15, 0.7); /* Parlayan efekt */
+    }
+
+    /* Footer genel stil */
+    footer {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #343a40, #212529); /* Degrade arka plan */
+    }
+
+    footer p {
+        color: #bbb;
+        font-size: 0.9rem;
+    }
+
+    footer a {
+        color: #fff;
+    }
+
+    footer a:hover {
+        color: #f1c40f;
+    }
+
+    /* Responsive düzenlemeler */
+    @media (max-width: 768px) {
+        .footer-heading {
+            font-size: 1.4rem;
+        }
+
+        .social-icon i {
+            font-size: 1.8rem; /* Mobil cihazlarda ikon boyutu */
+        }
+
+        .footer ul {
+            text-align: center;
+        }
+    }
+</style>

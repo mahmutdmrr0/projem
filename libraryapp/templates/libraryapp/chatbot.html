@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'libraryapp/css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #D4E4D9 0%, #A3C9A8 100%) url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"%3E%3Cg fill="%23FFFFFF" fill-opacity="0.1"%3E%3Cpath d="M40 0a40 40 0 0 1 40 40 40 40 0 0 1-40 40 40 40 0 0 1-40-40A40 40 0 0 1 40 0zm0 8a32 32 0 0 0-32 32 32 32 0 0 0 32 32 32 32 0 0 0 32-32A32 32 0 0 0 40 8z"/%3E%3C/g%3E%3C/svg%3E');
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            animation: subtleWave 15s infinite ease-in-out;
+        }
+        @keyframes subtleWave {
+            0%, 100% { background-position: 0 0; }
+            50% { background-position: 100% 100%; }
+        }
+        .chat-container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1), 0 0 20px rgba(52, 199, 89, 0.2);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            animation: fadeInContainer 1s ease-out;
+        }
+        @keyframes fadeInContainer {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .chat-container:hover {
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15), 0 0 30px rgba(52, 199, 89, 0.3);
+            transform: translateY(-5px);
+        }
+        .chat-header {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1A3C34;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0 2px 5px rgba(26, 60, 52, 0.2);
+            padding-top: 40px; /* Kitap emojisi için yer aç */
+        }
+        .chat-header::before {
+            content: '📚';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            font-size: 2rem; /* Boyutu küçülttüm */
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        .chat-header::after {
+            content: '';
+            width: 90px;
+            height: 4px;
+            background: linear-gradient(90deg, #34C759, #2EA043);
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .chat-box {
+            height: 500px;
+            overflow-y: auto;
+            background: #EDEDED; /* Açık gri, temana uyumlu */
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E2E8F0;
+            transition: border-color 0.3s ease;
+        }
+        .chat-box:hover {
+            border-color: #34C759;
+        }
+        .chat-box::-webkit-scrollbar {
+            width: 10px;
+        }
+        .chat-box::-webkit-scrollbar-track {
+            background: #F9FAFB;
+            border-radius: 10px;
+        }
+        .chat-box::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #34C759, #2EA043);
+            border-radius: 10px;
+        }
+        .chat-box::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2EA043, #1A3C34);
+        }
+        .message {
+            margin: 12px 0;
+            padding: 12px 20px;
+            border-radius: 12px;
+            max-width: 75%;
+            font-size: 1rem;
+            line-height: 1.4;
+            position: relative;
+            animation: messageIn 0.5s ease-out;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        @keyframes messageIn {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        .message:hover {
+            transform: scale(1.02);
+        }
+        .user-message {
+            background: linear-gradient(135deg, #34C759, #2EA043);
+            color: #FFFFFF;
+            margin-left: auto;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+        }
+        .user-message:hover {
+            background: linear-gradient(135deg, #2EA043, #1A3C34);
+        }
+        .bot-message {
+            background: #FFFFFF;
+            color: #1A3C34;
+            margin-right: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 1px solid #E2E8F0;
+            padding-left: 40px; /* Emoji için yer aç */
+        }
+        .bot-message::before {
+            content: '🤓';
+            position: absolute;
+            left: 10px; /* Daha içeri çektim */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem; /* Boyutu küçülttüm */
+        }
+        .typing {
+            color: #6B7280;
+            font-style: italic;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            background: #FFFFFF;
+            padding: 10px;
+            border-radius: 50px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, border 0.3s ease;
+        }
+        .input-area:hover {
+            box-shadow: 0 8px 20px rgba(52, 199, 89, 0.2);
+            border: 1px solid #34C759;
+        }
+        #message-input {
+            flex-grow: 1;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            background: #F9FAFB;
+            color: #1A3C34;
+            transition: all 0.3s ease;
+        }
+        #message-input:focus {
+            outline: none;
+            background: #FFFFFF;
+            box-shadow: 0 0 10px rgba(52, 199, 89, 0.5);
+        }
+        #send-btn {
+            background: linear-gradient(135deg, #34C759, #2EA043);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            color: #FFFFFF;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        #send-btn:hover {
+            background: linear-gradient(135deg, #2EA043, #1A3C34);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(52, 199, 89, 0.4);
+        }
+        .categories {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+        }
+        .categories:hover {
+            box-shadow: 0 8px 20px rgba(52, 199, 89, 0.2);
+        }
+        .category-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2EA043;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 3px rgba(46, 199, 89, 0.2);
+        }
+        .category-btn {
+            display: inline-block;
+            margin: 6px;
+            padding: 10px 20px;
+            background: #FFFFFF;
+            border: 2px solid #34C759;
+            border-radius: 30px;
+            color: #2EA043;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .category-btn:hover {
+            background: linear-gradient(135deg, #34C759, #2EA043);
+            color: #FFFFFF;
+            border-color: transparent;
+            transform: translateY(-3px) rotate(2deg);
+            box-shadow: 0 6px 15px rgba(52, 199, 89, 0.3);
+        }
+        @media (max-width: 768px) {
+            .chat-container {
+                margin: 20px 10px;
+                padding: 20px;
+            }
+            .chat-box {
+                height: 400px;
+            }
+            .chat-header {
+                font-size: 1.8rem;
+                padding-top: 35px; /* Mobil için biraz daha az yer */
+            }
+            .chat-header::before {
+                font-size: 1.8rem; /* Mobil için küçülttüm */
+            }
+            .bot-message {
+                padding-left: 35px; /* Mobil için emoji yeri */
+            }
+            .bot-message::before {
+                left: 8px;
+                font-size: 0.9rem; /* Mobil için küçülttüm */
+            }
+            #message-input {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            #send-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .category-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block page_title %}
+     Kitap Dostun
+{% endblock %}
+
+{% block content %}
+    <div class="chat-container">
+        <div class="chat-header">Kitap Dostun</div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="input-area">
+            <input type="text" id="message-input" placeholder="Kanka, neyi konuşalım?">
+            <button id="send-btn">Gönder</button>
+        </div>
+        <div class="categories">
+            <p class="category-title">Kategoriler</p>
+            {% for category in categories %}
+                <button class="category-btn" data-category="{{ category.translated_name.lower }}">
+                    {{ category.translated_name }}
+                </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', isUser ? 'user-message' : 'bot-message');
+            messageDiv.innerHTML = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('message', 'bot-message', 'typing');
+            typingDiv.innerHTML = 'Kanka yazıyor...';
+            chatBox.appendChild(typingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return typingDiv;
+        }
+
+        function removeTyping(typingDiv) {
+            if (typingDiv) chatBox.removeChild(typingDiv);
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = '';
+            const typingDiv = showTyping();
+            sendMessageToBot(message, typingDiv);
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+                const message = `${category} kitap öner`;
+                addMessage(message, true);
+                const typingDiv = showTyping();
+                sendMessageToBot(message, typingDiv);
+                setTimeout(() => {
+                    chatBox.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 100);
+            });
+        });
+
+        function sendMessageToBot(message, typingDiv) {
+            fetch("{% url 'chatbot_response' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Bağlantı sorunu kanka!');
+                return response.json();
+            })
+            .then(data => {
+                removeTyping(typingDiv);
+                addMessage(data.reply);
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                removeTyping(typingDiv);
+                addMessage('Kanka, ufak bir hata oldu, bi daha dene! 😅');
+            });
+        }
+
+        // İlk mesaj
+        addMessage("Selam kanka! 📚 Sana en iyi kitapları önermek için buradayım. Kategorilerden birine tıkla ya da bana direkt sor, neyi konuşalım? 😎");
+    </script>
+{% endblock %}

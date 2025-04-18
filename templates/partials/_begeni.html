@@ -1,0 +1,94 @@
+<!-- Beğenilen Kitaplar -->
+<div class="top-rated-books container my-5">
+    <h2 class="top-rated-title">Beğenilen Kitaplar</h2>
+
+    {% if grouped_top_rated_books %}
+        <div id="top-rated-books-carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for group in grouped_top_rated_books %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row">
+                            {% for book in group %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card book-card top-rated-card shadow-lg">
+                                        <img src="{{ book.image }}" class="card-img-top" alt="{{ book.title }}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                {{ book.title }}
+                                                <i class="fas fa-thumbs-up text-warning ms-2" title="Beğenilen Kitap"></i>
+                                            </h5>
+                                            <p class="card-text text-muted">Yazar: {{ book.author }}</p>
+                                            <p class="card-text text-muted">Puan: {{ book.rating }}</p>
+                                            <a href="{% url 'details' book.id %}" class="btn top-rated-btn w-100">
+                                                Detayları Gör
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center mt-4">
+            📌 Beğenilen kitaplar henüz oluşturulamadı. Algoritmanız kitapları beğendikçe burası güncellenecek!
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* === Beğenilen Kitaplar Sarı Tema === */
+.top-rated-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #f1c40f, #e1ad01, #d4ac0d);
+    -webkit-background-clip: text;
+    color: transparent;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 15px;
+    border-bottom: 4px solid #343a40;
+    margin-bottom: 40px;
+}
+
+/* Kart Border ve Hover Efekti */
+.top-rated-card {
+    border: 3px solid #f1c40f;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.top-rated-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 12px rgba(241, 196, 15, 0.6);
+}
+
+/* Buton */
+.top-rated-btn {
+    background-color: #f1c40f;
+    border-color: #f1c40f;
+    color: white;
+    border-radius: 30px;
+    padding: 12px 25px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.top-rated-btn:hover {
+    background-color: #e1ad01;
+    border-color: #e1ad01;
+    transform: scale(1.05);
+}
+
+/* Uyarı Mesajı */
+.alert-warning {
+    font-size: 1.2rem;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+</style>

@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'testapp/css/style.css' %}">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: linear-gradient(135deg, #d6f7d6, #e6f9e6);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+        }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 5px solid #28a745;
+            cursor: pointer; /* Tıklanabilir olduğunu belirtmek için */
+            transition: transform 0.3s ease;
+        }
+        .profile-pic:hover {
+            transform: scale(1.1); /* Hover efekti */
+        }
+        h1, h2 {
+            color: #218838;
+            font-weight: bold;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 18px;
+            color: #2c6b2f;
+            margin: 10px 0;
+        }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+            margin: 15px 10px;
+            border: none;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+        .btn-back {
+            background-color: #218838;
+            color: white;
+        }
+        .btn-back:hover {
+            background-color: #1e7e34;
+            transform: translateY(-3px);
+        }
+
+        /* Accordion Stili */
+        .book-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .book-item {
+            margin-bottom: 15px;
+        }
+        .accordion-header {
+            background: #f0fff4;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 150, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .accordion-header:hover {
+            background-color: #e9f5e9;
+            transform: translateY(-3px);
+        }
+        .accordion-header strong {
+            color: #218838;
+            font-size: 20px;
+        }
+        .accordion-header::after {
+            content: '▼';
+            position: absolute;
+            right: 20px;
+            font-size: 14px;
+            color: #28a745;
+            transition: transform 0.3s ease;
+        }
+        .accordion-header.active::after {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            display: none; /* Varsayılan olarak gizli */
+            background: #fff;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #d4edda;
+        }
+        .accordion-content.active {
+            display: block; /* Açıkken görünür */
+            animation: slideDown 0.3s ease forwards;
+        }
+
+        /* Form Stili */
+        .comment-form select,
+        .comment-form textarea,
+        .recommend-form select {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 2px solid #28a745;
+            border-radius: 6px;
+            background-color: #f0fff4;
+            font-size: 16px;
+        }
+        .comment-form textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .comment-form button {
+            width: 100%;
+            padding: 14px;
+        }
+
+        /* Yorumlar */
+        .comment-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        .comment-list li {
+            background: #d4edda;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 150, 0, 0.15);
+        }
+
+        /* Öneri Formu */
+        .recommend-form button {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .pagination a,
+        .pagination span {
+            padding: 10px 20px;
+            margin: 0 8px;
+            border: 1px solid #28a745;
+            border-radius: 6px;
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #28a745;
+            color: white;
+        }
+        .pagination .current {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Önerilen Kitaplar */
+        .recommended-books {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .recommended-books ul {
+            list-style: none;
+            padding: 0;
+        }
+        .recommended-books li {
+            background: #f0fff4;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 150, 0, 0.15);
+        }
+
+        /* Animasyon */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                height: 0;
+            }
+            to {
+                opacity: 1;
+                height: auto;
+            }
+        }
+
+        /* Modal Stili */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        .modal-body {
+            padding: 0;
+        }
+        .modal-body img {
+            width: 100%;
+            max-width: 500px; /* Maksimum genişlik */
+            height: auto;
+            border-radius: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block page_title %}
+    {{ profile_user.username }} Profili
+{% endblock %}
+
+{% block content %}
+    <div class="profile-container">
+        <h1>{{ profile_user.username }} Profili</h1>
+        <div class="profile-info">
+            {% if profile_user.userprofile.profile_picture %}
+                <img src="{{ profile_user.userprofile.profile_picture.url }}" alt="Profil Fotoğrafı" class="profile-pic" data-bs-toggle="modal" data-bs-target="#profilePicModal">
+            {% else %}
+                <img src="{% static 'testapp/images/default_profile.png' %}" alt="Varsayılan Fotoğraf" class="profile-pic" data-bs-toggle="modal" data-bs-target="#profilePicModal">
+            {% endif %}
+            <p><strong>Adı:</strong> {{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+            <p><strong>E-Posta:</strong> {{ profile_user.email }}</p>
+            <p><strong>Biyografi:</strong> {{ profile_user.userprofile.bio|default:"Biyografi eklenmemiş." }}</p>
+        </div>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if not is_friend %}
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" name="send_friend_request" class="btn btn-success">👥 Arkadaş İsteği Gönder</button>
+            </form>
+        {% endif %}
+
+        {% if is_friend %}
+            <h2 id="books">📚 Kitaplık</h2>
+            <ul class="book-list">
+                {% for book in page_obj %}
+                    <li class="book-item">
+                        <div class="accordion-header" data-book-id="{{ book.id }}">
+                            <strong>{{ book.title }}</strong> <span>(Puan: {{ book.rating|default:"0" }})</span>
+                        </div>
+                        <div class="accordion-content" id="content-{{ book.id }}">
+                            <form method="POST" class="comment-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="book_id" value="{{ book.id }}">
+                                <select name="rating">
+                                    <option value="">Puan Seç</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <textarea name="comment" placeholder="Yorum yaz..."></textarea>
+                                <button type="submit" name="submit_review" class="btn btn-success">💬 Gönder</button>
+                            </form>
+                            <ul class="comment-list">
+                                {% for comment in book.comments.all %}
+                                    <li>{{ comment.user.username }}: {{ comment.content }} ({{ comment.created_at|date:"d.m.Y" }})</li>
+                                {% empty %}
+                                    <li>Henüz yorum yok.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>Bu kullanıcı henüz kitap eklememiş.</li>
+                {% endfor %}
+            </ul>
+
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">« İlk</a>
+                    {% endif %}
+                    <span class="current">Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}.</span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+                    {% endif %}
+                </span>
+            </div>
+
+            <h2>📖 Kitap Öner</h2>
+            <form method="POST" class="recommend-form">
+                {% csrf_token %}
+                <select name="book_id">
+                    <option value="">Kitap Seçin</option>
+                    {% for book in my_books %}
+                        <option value="{{ book.id }}">{{ book.title }} - {{ book.author }}</option>
+                    {% empty %}
+                        <option value="">Kitaplığınızda kitap yok.</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" name="recommend_my_book" class="btn btn-success">📩 Kitaplığımdan Öner</button>
+            </form>
+
+            <div class="recommended-books">
+                <h2>Önerilen Kitaplar</h2>
+                <ul>
+                    {% for rec_book in recommended_books %}
+                        <li>
+                            <strong>{{ rec_book.title }}</strong> - {{ rec_book.author }}
+                            {% if rec_book.image %}
+                                <br><img src="{{ rec_book.image }}" alt="{{ rec_book.title }}" style="max-width: 100px;">
+                            {% endif %}
+                            {% if rec_book.info_link %}
+                                <br><a href="{{ rec_book.info_link }}" target="_blank">Daha Fazla Bilgi</a>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>Henüz önerilen kitap yok.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div>
+            <a href="{% url 'profilim' %}" class="btn-back">🔙 Geri Dön</a>
+            {% if is_friend %}
+                <a href="{% url 'send_message' profile_user.username %}" class="btn btn-success">💬 Mesaj Gönder</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Profil Fotoğrafı Modal -->
+    <div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {% if profile_user.userprofile.profile_picture %}
+                        <img src="{{ profile_user.userprofile.profile_picture.url }}" alt="Profil Fotoğrafı">
+                    {% else %}
+                        <img src="{% static 'testapp/images/default_profile.png' %}" alt="Varsayılan Fotoğraf">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_files %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const headers = document.querySelectorAll(".accordion-header");
+            console.log("Bulunan accordion başlıkları:", headers.length); // Debugging
+
+            if (headers.length === 0) {
+                console.error("Hata: .accordion-header bulunamadı!");
+                return;
+            }
+
+            headers.forEach(header => {
+                header.addEventListener("click", function () {
+                    const content = this.nextElementSibling;
+                    if (!content) {
+                        console.error("Hata: Accordion içeriği yok!", this);
+                        return;
+                    }
+
+                    const isActive = content.classList.contains("active");
+                    console.log("Tıklanan:", this.textContent, "Açık mı:", isActive);
+
+                    // Tüm accordion'ları kapat
+                    document.querySelectorAll(".accordion-content.active").forEach(item => {
+                        item.classList.remove("active");
+                        item.previousElementSibling.classList.remove("active");
+                    });
+
+                    // Tıklanan accordion'ı aç/kapat
+                    if (!isActive) {
+                        content.classList.add("active");
+                        this.classList.add("active");
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

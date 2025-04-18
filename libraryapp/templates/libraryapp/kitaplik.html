@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+     Kitaplık
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center" style="font-weight: bold; color: #2c3e50;">
+        📚 Kitaplığına Hoş Geldin, <span style="color: #27ae60;">{{ user.username }}</span>!
+    </h2>
+    <p class="text-center" style="color: #7f8c8d;">
+        Eklediğin kitapları burada görebilirsin.
+    </p>
+
+    <!-- Mesaj Alanı -->
+    <div id="message-area" class="mt-3"></div>
+
+    {% if kitaplar %}
+        <div class="table-responsive mt-4">
+            <table class="table table-hover table-bordered custom-table">
+                <thead class="text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>Kapak</th>
+                        <th>Kitap Adı</th>
+                        <th>Yazar</th>
+                        <th>Kategori</th>
+                        <th>Yayın Tarihi</th>
+                        <th>Ekleme Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for kitap in kitaplar %}
+                        <tr id="book-row-{{ kitap.id }}">
+                            <td class="align-middle text-center">{{ forloop.counter }}</td>
+                            <td class="text-center">
+                                <img src="{{ kitap.image }}" alt="Kapak" 
+                                     class="book-cover">
+                            </td>
+                            <td class="align-middle">
+                                <span class="book-title">{{ kitap.title }}</span>
+                            </td>
+                            <td class="align-middle">{{ kitap.author }}</td>
+                            <td class="align-middle">{{ kitap.category }}</td>
+                            <td class="align-middle">{{ kitap.published_date }}</td>
+                            <td class="align-middle">{{ kitap.created_at|date:"d F Y" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'details' id=kitap.book_id %}" class="btn btn-sm custom-detail-btn">
+                                    <i class="fas fa-info-circle"></i> Detay
+                                </a>
+                                <button type="button" class="btn btn-sm custom-delete-btn" 
+                                        onclick="openDeleteModal('{{ kitap.title|escapejs }}', '{{ kitap.id }}', '{% url 'delete_book' id=kitap.id %}')">
+                                    <i class="fas fa-trash-alt"></i> Sil
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center mt-4 custom-alert">
+            📌 <strong>Kitaplığınız şu an boş!</strong> Henüz hiç kitap eklemediniz. <br>
+            📖 Yeni kitaplar ekleyerek kendi kitaplığınızı oluşturabilirsiniz.
+            <div class="mt-3">
+                <a href="{% url 'index' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus-circle"></i> Kitap Ekle
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Silme Onay Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel"><i class="fas fa-book me-2"></i>Kitabı Sil</h5>
+                    <button type="button" class="btn-close custom-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><i class="fas fa-exclamation-circle me-2"></i>"<span id="modalBookTitle"></span>" adlı kitabı silmek istediğine emin misin, kanka?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary custom-btn-vazgec" data-bs-dismiss="modal">Vazgeç</button>
+                    <button type="button" class="btn btn-danger custom-btn-sil" id="confirmDeleteBtn">Sil</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// CSRF token’ı al
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+// Modal’ı aç
+function openDeleteModal(bookTitle, bookId, deleteUrl) {
+    document.getElementById('modalBookTitle').textContent = bookTitle;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    
+    confirmBtn.onclick = function() {
+        fetch(deleteUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`book-row-${bookId}`).remove();
+                showMessage('Kitap başarıyla silindi!', 'success');
+            } else {
+                showMessage('Kitap silinirken bir hata oluştu: ' + data.error, 'danger');
+            }
+            modal.hide();
+        })
+        .catch(error => {
+            showMessage('Bir hata oluştu: ' + error, 'danger');
+            modal.hide();
+        });
+    };
+    
+    modal.show();
+}
+
+// Mesaj gösterme
+function showMessage(message, type) {
+    const messageArea = document.getElementById('message-area');
+    messageArea.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+}
+</script>
+
+<style>
+    /* Genel Stil */
+    .custom-table {
+        border: 3px solid #2ecc71;
+        background-color: #ecfdf5;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Başlık Stil */
+    thead {
+        background-color: #1e8449;
+        color: white;
+        font-size: 18px;
+    }
+
+    /* Satır Hover Efekti */
+    tbody tr:hover {
+        background-color: rgba(46, 204, 113, 0.1);
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    /* Kitap Kapak Resmi */
+    .book-cover {
+        width: 70px;
+        height: 90px;
+        border-radius: 8px;
+        border: 2px solid #2ecc71;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Kitap Adı */
+    .book-title {
+        font-weight: bold;
+        color: #2c3e50;
+        font-size: 16px;
+    }
+
+    /* Butonlar */
+    .custom-detail-btn, .custom-delete-btn {
+        border-radius: 25px;
+        padding: 8px 15px;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-detail-btn {
+        background-color: #2ecc71;
+        color: white;
+    }
+    .custom-detail-btn:hover {
+        background-color: #27ae60;
+        transform: scale(1.05);
+    }
+
+    .custom-delete-btn {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .custom-delete-btn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05);
+    }
+
+    /* Uyarı Mesajı */
+    .custom-alert {
+        background-color: #fdf6e3;
+        color: #d35400;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    /* Kitap Ekle Butonu */
+    .custom-alert a.btn-success {
+        font-size: 18px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+        text-decoration: none;
+    }
+
+    .custom-alert a.btn-success:hover {
+        background-color: #1e8449;
+        transform: scale(1.05);
+    }
+
+    /* Modal Stilleri */
+    .custom-modal {
+        background: linear-gradient(135deg, #ecfdf5, #d4f4e2);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: modalPop 0.4s ease-out;
+        border: 2px solid #2ecc71;
+    }
+
+    @keyframes modalPop {
+        0% { transform: scale(0.8) translateY(-20px); opacity: 0; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal-dialog {
+        margin-top: 10vh; /* Navbar için yukarıdan boşluk */
+    }
+
+    .modal-header {
+        background: linear-gradient(90deg, #1e8449, #27ae60);
+        color: #fff;
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        padding: 20px;
+        position: relative;
+        border-bottom: none;
+    }
+
+    .modal-title {
+        font-weight: bold;
+        font-size: 1.5rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        transition: all 0.3s ease;
+    }
+
+    .custom-close:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: rotate(90deg);
+    }
+
+    .modal-body {
+        padding: 25px;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .modal-body p {
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .modal-footer {
+        border-top: none;
+        padding: 20px;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .custom-btn-vazgec, .custom-btn-sil {
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .custom-btn-vazgec {
+        background: #6c757d;
+        color: #fff;
+    }
+
+    .custom-btn-vazgec:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+    }
+
+    .custom-btn-sil {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: #fff;
+    }
+
+    .custom-btn-sil:hover {
+        background: linear-gradient(135deg, #c0392b, #a93226);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+    }
+
+    .custom-btn-vazgec::before, .custom-btn-sil::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .custom-btn-vazgec:hover::before, .custom-btn-sil:hover::before {
+        width: 200px;
+        height: 200px;
+    }
+
+    @media (max-width: 576px) {
+        .modal-dialog {
+            margin-top: 15vh;
+        }
+
+        .modal-content {
+            margin: 0 10px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+        }
+
+        .modal-body {
+            font-size: 1rem;
+            padding: 20px;
+        }
+
+        .custom-btn-vazgec, .custom-btn-sil {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}

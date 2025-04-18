@@ -1,0 +1,151 @@
+{% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert-box alert {{ message.tags }} alert-dismissible fade show animated-alert text-center">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="progress-bar"></div> <!-- 🔥 Süre çubuğu -->
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<style>
+    /* 📌 Mesajları sabitleyen konteyner */
+    .alert-container {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 600px;
+        z-index: 1050;
+        padding: 10px;
+        margin-top: 150px; /* Navbarın üst kısmı ile boşluk bırakmak için */
+    }
+
+    /* 🌟 Giriş animasyonu */
+    @keyframes fadeInSlideBounce {
+        0% {
+            opacity: 0;
+            transform: translateY(-40px) scale(0.95);
+            filter: blur(5px);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(10px) scale(1.02);
+            filter: blur(2px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+    }
+
+    /* 🌀 Kaybolma animasyonu */
+    @keyframes fadeOutUpBlur {
+        0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+        50% {
+            opacity: 0.5;
+            transform: translateY(-10px) scale(0.98);
+            filter: blur(2px);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.9);
+            filter: blur(5px);
+        }
+    }
+
+    /* 🌟 Başlangıçta görünmesini sağlayan sınıf */
+    .animated-alert {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.95);
+        filter: blur(5px);
+        animation: fadeInSlideBounce 1s ease-out forwards;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 14px 22px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 🔥 Kaybolma efekti */
+    .fade-out {
+        animation: fadeOutUpBlur 1s ease-out forwards;
+    }
+
+    /* 📏 Süre çubuğu */
+    .progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background-color: #ff5733; /* Kırmızı renk (isteğe göre değiştirilebilir) */
+        animation: progressBarAnim 6s linear forwards;
+    }
+
+    /* 🎬 Süre çubuğu animasyonu */
+    @keyframes progressBarAnim {
+        0% {
+            width: 100%;
+        }
+        100% {
+            width: 0%;
+        }
+    }
+
+    /* 📌 Farklı mesaj tipleri için tasarım */
+    .alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
+    .alert-dismissible .btn-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0.5rem;
+    }
+</style>
+
+<script>
+    // 6 saniye sonra mesajları kaybolma animasyonu ile kaldır
+    setTimeout(function () {
+        let alerts = document.querySelectorAll('.alert-box');
+        alerts.forEach(function(alert) {
+            alert.classList.add('fade-out'); // CSS animasyonunu ekle
+            setTimeout(() => alert.remove(), 1000); // Animasyon bitince kaldır
+        });
+    }, 6000);
+</script>

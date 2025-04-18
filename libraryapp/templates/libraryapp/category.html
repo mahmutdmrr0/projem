@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block page_title %}
+     Kategoriler
+{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #ECEFF1 url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Cg fill="%23CFD8DC" fill-opacity="0.1"%3E%3Cpath d="M0 40L40 0H20L0 20z"/%3E%3C/g%3E%3C/svg%3E'); /* Hafif geometrik doku */
+        font-family: 'Roboto', sans-serif; /* Minimal ve profesyonel font */
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    .category-container {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 20px;
+        position: relative;
+    }
+    h1 {
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: #263238; /* Koyu gri-mavi */
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 50px;
+        position: relative;
+        animation: glow 2s infinite alternate;
+    }
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #28A745, #218838); /* Yeşil gradient */
+        border-radius: 2px;
+    }
+    @keyframes glow {
+        0% { text-shadow: 0 0 5px rgba(40, 167, 69, 0.3); } /* Yeşil glow */
+        100% { text-shadow: 0 0 15px rgba(40, 167, 69, 0.6); } /* Yeşil glow */
+    }
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+        padding: 0 10px;
+    }
+    .category-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        opacity: 0;
+        animation: popIn 0.6s ease-out forwards;
+        animation-delay: calc(0.1s * var(--i));
+    }
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.9) rotate(-5deg); }
+        100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, transparent, rgba(40, 167, 69, 0.3), transparent); /* Yeşil parlama */
+        transition: all 0.5s ease;
+    }
+    .category-card:hover::before {
+        left: 100%;
+    }
+    .category-card:hover {
+        transform: rotate(2deg) translateY(-10px); /* Hafif dönme ve yükselme */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    .category-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        transition: transform 0.4s ease, color 0.4s ease;
+    }
+    .category-card:hover .category-icon {
+        transform: rotate(10deg) scale(1.2); /* İkon hareketi */
+    }
+    .category-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #37474F; /* Koyu gri */
+        transition: color 0.4s ease;
+    }
+    .category-card:hover .category-title {
+        color: #28A745; /* Yeşil vurgu */
+    }
+    {% for category in categories %}
+        .{{ category.name|slugify }}-card .category-icon,
+        .{{ category.name|slugify }}-card .category-title {
+            color: {{ category.color|default:'#28A745' }};
+        }
+        .{{ category.name|slugify }}-card:hover .category-icon,
+        .{{ category.name|slugify }}-card:hover .category-title {
+            color: {{ category.color|default:'#28A745' }};
+        }
+    {% endfor %}
+    .no-category {
+        font-size: 1.8rem;
+        color: #90A4AE;
+        text-align: center;
+        margin-top: 50px;
+        animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    @media (max-width: 768px) {
+        .category-grid {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        h1 {
+            font-size: 2rem;
+        }
+        .category-icon {
+            font-size: 2rem;
+        }
+        .category-title {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+{% if messages %}
+<div class="container-fluid p-0 m-0">
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible fade show mb-0 text-center">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+
+<div class="category-container">
+    {% if categories %}
+        <h1>KATEGORİLER</h1>
+        <div class="category-grid">
+            {% for category in categories %}
+                <a href="{% url 'category_books' category.id %}" class="text-decoration-none">
+                    <div class="category-card {{ category.name|slugify }}-card" style="--i: {{ forloop.counter0 }};">
+                        {% if category.icon_class %}
+                            <i class="{{ category.icon_class }} category-icon"></i>
+                        {% else %}
+                            <i class="fa-solid fa-question-circle category-icon"></i>
+                        {% endif %}
+                        <h5 class="category-title">{{ category.translated_name|default:category.name }}</h5>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-category">Kategori bulunamadı.</p>
+    {% endif %}
+</div>
+
+<!-- Fontlar ve FontAwesome -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

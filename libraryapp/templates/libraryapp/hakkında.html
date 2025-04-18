@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'libraryapp/css/style.css' %}">
+    <style>
+        /* Genel konteyner */
+        .about-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0fff4, #e6f9e6);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sol taraftaki navigasyon */
+        .sidebar {
+            width: 25%;
+            padding-right: 20px;
+            position: sticky;
+            top: 120px; /* Navbar’dan sonra başlasın */
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            color: #218838;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #3a3a3a;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background: linear-gradient(90deg, #28a745, #218838);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* İçerik kısmı */
+        .content {
+            width: 75%;
+            padding-left: 20px;
+        }
+
+        .content h1 {
+            color: #218838;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .content h2 {
+            color: #28a745;
+            font-size: 26px;
+            margin-top: 40px;
+            margin-bottom: 15px;
+        }
+
+        .content p {
+            font-size: 18px;
+            color: #2c6b2f;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .step-guide {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .step-guide h3 {
+            color: #28a745;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .step-guide ol {
+            list-style: decimal inside;
+            margin-left: 20px;
+        }
+
+        .step-guide ol li {
+            margin-bottom: 10px;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feature-item {
+            width: 45%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-item h4 {
+            color: #218838;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .feature-item p {
+            color: #2c6b2f;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Kaynaklar */
+        .sources {
+            background-color: #f7f7f7;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+        }
+
+        .sources h3 {
+            color: #28a745;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sources ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sources li {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive tasarım */
+        @media (max-width: 768px) {
+            .about-container {
+                flex-direction: column;
+            }
+            .sidebar, .content {
+                width: 100%;
+                padding: 0;
+            }
+            .sidebar {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block page_title %}
+    Hakkında Sayfası
+{% endblock %}
+
+{% block content %}
+    <div class="about-container">
+        <!-- Sol taraftaki navigasyon -->
+        <div class="sidebar">
+            <h3>Başlıklar</h3>
+            <ul>
+                <li><a href="#proje-nedir" class="nav-link">Proje Nedir?</a></li>
+                <li><a href="#nasil-calisir" class="nav-link">Sistem Nasıl Çalışır?</a></li>
+                <li><a href="#ozellikler" class="nav-link">Özellikler</a></li>
+                <li><a href="#kullanim" class="nav-link">Nasıl Kullanılır?</a></li>
+                <li><a href="#kaynaklar" class="nav-link">Kaynaklar</a></li>
+            </ul>
+        </div>
+
+        <!-- İçerik kısmı -->
+        <div class="content">
+            <h1>Hakkında Sayfası</h1>
+
+            <section id="proje-nedir">
+                <h2>Proje Nedir?</h2>
+                <p>Bu proje, kitap severler için tasarlanmış interaktif bir sosyal platformdur. Kullanıcılar kendi kitaplıklarını oluşturabilir, kitap önerilerinde bulunabilir, arkadaşlarının kitap koleksiyonlarını inceleyebilir ve yorum yapabilir. Ayrıca, yeni eklenen "Kitap Dostun" yapay zeka özelliği ile kişiselleştirilmiş kitap önerileri alabilirler. Amacımız, kitap okuma deneyimini daha sosyal, eğlenceli ve akıllı bir hale getirmektir.</p>
+            </section>
+
+            <section id="nasil-calisir">
+                <h2>Sistem Nasıl Çalışır?</h2>
+                <p>Sistem, Google Books ve Gutendex API’lerini kullanarak geniş bir kitap veritabanına erişir. Kullanıcılar bu verilerden kitapları seçip kitaplıklarına ekler ve arkadaşlık sistemiyle diğer kullanıcılarla bağlantı kurabilir. Yeni eklenen "Kitap Dostun" yapay zeka özelliği, kullanıcıların okuma tercihlerini analiz ederek onlara özel kitap önerileri sunar. Puanlama ve yorumlama sistemi ise topluluk içinde fikir alışverişini güçlendirir.</p>
+            </section>
+
+            <section id="ozellikler">
+                <h2>Özellikler</h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <h4>Kitaplık Oluşturma</h4>
+                        <p>Kendi kitap koleksiyonlarınızı oluşturabilir ve kolayca düzenleyebilirsiniz.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Arkadaşlık Sistemi</h4>
+                        <p>Diğer kullanıcılarla arkadaş olup onların kitaplıklarını keşfedebilirsiniz.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Kitap Önerisi</h4>
+                        <p>Arkadaşlarınıza önerilerde bulunabilir ve onların tavsiyelerini görebilirsiniz.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Kitap Dostun (Yapay Zeka)</h4>
+                        <p>Yeni eklenen yapay zeka ile okuma zevkinize uygun kitap önerileri alabilirsiniz.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Puanlama ve Yorum</h4>
+                        <p>Kitaplara puan verip yorum yaparak topluluğa katkıda bulunabilirsiniz.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="kullanim">
+                <h2>Nasıl Kullanılır?</h2>
+                <div class="step-guide">
+                    <h3>Adım Adım Kullanım Kılavuzu</h3>
+                    <ol>
+                        <li><strong>Kayıt olun veya giriş yapın:</strong> Platforma katılarak kitaplığınızı oluşturmaya başlayın.</li>
+                        <li><strong>Kitap arayın veya önerilerden seçin:</strong> Google Books, Gutendex veya "Kitap Dostun" önerileriyle kitapları keşfedin.</li>
+                        <li><strong>Kitap ekleyin:</strong> Beğendiğiniz kitapları kitaplığınıza ekleyip düzenleyin.</li>
+                        <li><strong>Arkadaş ekleyin:</strong> Sosyal bağlantılar kurarak diğer kitap severlerle etkileşime geçin.</li>
+                        <li><strong>Kitap Dostun’u kullanın:</strong> Yapay zeka ile size özel kitap önerileri alın.</li>
+                        <li><strong>Puanlama ve yorum yapın:</strong> Kitaplar hakkındaki görüşlerinizi paylaşarak topluluğu zenginleştirin.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Kaynaklar kısmı -->
+            <section id="kaynaklar" class="sources">
+                <h3>Kaynaklar</h3>
+                <ul>
+                    <li><a href="https://books.google.com" target="_blank">Google Books API</a></li>
+                    <li><a href="https://gutendex.com" target="_blank">Gutendex API</a></li>
+                    <li><a href="https://www.django-rest-framework.org/" target="_blank">Django REST Framework</a></li>
+                    <li><a href="https://xai.com" target="_blank">xAI (Kitap Dostun Yapay Zekası)</a></li>
+                </ul>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_files %}
+    <script>
+        // Sidebar linklerine tıklayınca yumuşak kaydırma
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1); // #id’den id’yi al
+                const targetElement = document.getElementById(targetId);
+
+                // Yumuşak kaydırma
+                window.scrollTo({
+                    top: targetElement.offsetTop - 120, // Navbar yüksekliği kadar boşluk
+                    behavior: 'smooth'
+                });
+
+                // Aktif sınıfı ekleme
+                document.querySelectorAll('.sidebar a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+{% endblock %}

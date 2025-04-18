@@ -1,0 +1,133 @@
+<!-- Bedava Kitaplar -->
+<div class="free-books container my-5">
+    <h2 class="free-books-title">Bedava Kitaplar</h2>
+
+    {% if grouped_free_books %}
+        <div id="free-books-carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for group in grouped_free_books %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row">
+                            {% for book in group %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card book-card free-books-card shadow-lg">
+                                        <img src="{{ book.image }}" class="card-img-top" alt="{{ book.title }}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                {{ book.title }}
+                                                <i class="fas fa-book text-danger ms-2" title="Bedava Kitap"></i>
+                                            </h5>
+                                            <p class="card-text text-muted">Yazar: {{ book.author }}</p>
+                                            <p class="card-text text-muted description">{{ book.description }}</p>
+                                            <a href="{% url 'details' id=book.id %}" class="btn free-books-btn w-100">
+                                                Detayları Gör
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-danger text-center mt-4">
+            📌 Şu anda bedava kitaplar mevcut değil. Lütfen daha sonra tekrar deneyin.
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Bedava Kitaplar Kırmızı Tema */
+.free-books-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #e74c3c, #c0392b, #8e2121);
+    -webkit-background-clip: text;
+    color: transparent;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 15px;
+    border-bottom: 4px solid #343a40;
+    margin-bottom: 40px;
+}
+
+/* Kart Border ve Hover Efekti */
+.free-books-card {
+    border: 3px solid #e74c3c;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Kartların yüksekliği eşit olsun */
+    display: flex;
+    flex-direction: column;
+}
+
+.free-books-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 12px rgba(231, 76, 60, 0.6);
+}
+
+/* Kart Görseli */
+.card-img-top {
+    height: 200px; /* Sabit yükseklik */
+    object-fit: cover; /* Görseli kırp */
+}
+
+/* Kart İçeriği */
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+/* Başlık */
+.card-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Uzun başlıkları kes */
+}
+
+/* Açıklama */
+.description {
+    font-size: 0.9rem;
+    max-height: 60px; /* Sabit yükseklik */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Taşan metni kes */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Maksimum 3 satır */
+    -webkit-box-orient: vertical;
+    margin-bottom: 10px;
+}
+
+/* Buton */
+.free-books-btn {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: white;
+    border-radius: 30px;
+    padding: 10px 20px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.free-books-btn:hover {
+    background-color: #c0392b;
+    border-color: #c0392b;
+    transform: scale(1.05);
+}
+
+/* Uyarı Mesajı */
+.alert-danger {
+    font-size: 1.2rem;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+</style>

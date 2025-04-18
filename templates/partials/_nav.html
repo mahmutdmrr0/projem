@@ -1,0 +1,382 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light" id="navbar" style="background-color: #f1e4b2; padding: 10px 30px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); margin: 10px; position: fixed; top: 0; left: 0; right: 0; z-index: 9999; transition: top 0.3s, box-shadow 0.3s ease, transform 0.3s ease;">
+    <div class="container-fluid">
+        <!-- LOGO -->
+        <a class="navbar-brand" href="{% url 'index' %}" style="font-size: 24px; font-weight: bold; color: #3a3a3a; text-transform: uppercase; padding-left: 10px;">
+            <img src="{% static 'img/trans1.png' %}" alt="MadBook Logo" style="height: 90px; width: auto; transition: transform 0.3s ease, filter 0.3s ease;">
+        </a>
+        
+        <!-- Toggler Butonu -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none;">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar İçeriği -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">Ana Sayfa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'category' %}active{% endif %}" href="{% url 'category' %}">Kategoriler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'book_list' %}active{% endif %}" href="{% url 'book_list' %}">Kitaplar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'kitaplik' %}active{% endif %}" href="{% url 'kitaplik' %}">Kitaplığım</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'chatbot_page' %}active{% endif %}" href="{% url 'chatbot_page' %}">Kitap Dostun</a>
+                </li>
+                {% if request.user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'admin_bildirimler' %}active{% endif %}" href="{% url 'admin_bildirimler' %}" style="position: relative;">
+                        Bildirimler
+                        <span id="complaint-badge" class="complaint-badge" style="display: none;"></span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <!-- Kullanıcı İşlemleri (Offcanvas Tetikleyici ve Hoşgeldin Mesajı) -->
+            <ul class="navbar-nav ms-3 align-items-center">
+                {% if user.is_authenticated %}
+                    <li class="nav-item d-flex align-items-center">
+                        <span class="welcome-text me-2" style="font-size: 16px; color: #3a3a3a; font-weight: 500;">Hoşgeldin, {{ request.user.username }}</span>
+                        <a class="nav-link position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#userOffcanvas" aria-controls="userOffcanvas">
+                            {% if request.user.userprofile.profile_picture %}
+                                <img src="{{ request.user.userprofile.profile_picture.url }}" alt="Profil Fotoğrafı" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745;">
+                            {% else %}
+                                <i class="fas fa-user-circle" style="font-size: 32px; color: #3a3a3a;"></i>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <!-- Mevcut Zil Simgesi (Dokunulmadan Kalacak) -->
+                    <li class="nav-item">
+                        <div class="navbar-notif" id="notif-icon" style="cursor: pointer;">
+                            <span class="notif-icon">🔔</span>
+                            <span id="notif-badge" class="notif-badge" style="display: none;"></span>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'user_login' %}active{% endif %}" href="{% url 'user_login' %}">Giriş Yap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'user_register' %}active{% endif %}" href="{% url 'user_register' %}">Kayıt Ol</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <!-- Arama Formu -->
+            <form class="d-flex" role="search" action="{% url 'search' %}" method="get">
+                <input class="form-control me-2 search-input" type="search" placeholder="Ara" name="q" aria-label="Search">
+                <button class="btn btn-search" type="submit">Ara</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Offcanvas Menü -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="userOffcanvas" aria-labelledby="userOffcanvasLabel" style="padding-top: 130px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="userOffcanvasLabel">Kullanıcı Menüsü</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'profilim' %}active{% endif %}" href="{% url 'profilim' %}">Profilim</a>
+            </li>
+            <li class="list-group-item">
+                <a class="nav-link" href="{% url 'hakkında' %}">Madbook Hakkında</a>
+            </li>
+            <li class="list-group-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'sikayet_gonder' %}active{% endif %}" href="{% url 'sikayet_gonder' %}">Şikayet Bildir</a>
+            </li>
+            <li class="list-group-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'change_password' %}active{% endif %}" href="{% url 'change_password' %}">Parola Güncelle</a>
+            </li>
+            <li class="list-group-item">
+                <a class="nav-link" href="{% url 'user_logout' %}" onclick="return confirmLogout(event)">Çıkış</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Stil Düzenlemeleri -->
+<style>
+    body {
+        margin-top: 90px;
+        background-color: #f8f9fa;
+    }
+
+    /* Navbar with subtle glow and shadow effect */
+    #navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background-color: #f1e4b2;
+        padding: 10px 30px;
+        border-radius: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        transition: top 0.3s, box-shadow 0.3s ease, transform 0.3s ease;
+        border: 3px solid rgba(40, 167, 69, 0.4);
+        box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
+        transform: translateY(0);
+    }
+
+    /* Logo hover effect */
+    .navbar-brand img:hover {
+        transform: scale(1.1);
+        filter: brightness(1.2);
+    }
+
+    /* Navbar links */
+    .nav-link {
+        color: #3a3a3a;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px 15px;
+        transition: all 0.3s ease;
+        border-radius: 25px;
+    }
+
+    /* Hover effect for navbar links */
+    .nav-link:hover {
+        color: #fff;
+        background: linear-gradient(90deg, #28a745, #218838);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+    }
+
+    /* Active link */
+    .nav-link.active {
+        color: #fff !important;
+        background: linear-gradient(90deg, #28a745, #218838);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-link.active::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(30deg);
+        animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-100%) rotate(30deg); }
+        50% { transform: translateX(100%) rotate(30deg); }
+        100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    /* Search input and button */
+    .search-input {
+        border-radius: 25px;
+        padding: 8px 15px;
+        border: 1px solid #aaa;
+    }
+
+    .btn-search {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 8px 15px;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    .btn-search:hover {
+        background-color: #218838;
+        color: #d4edda;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+
+    /* Toggler button */
+    .navbar-toggler {
+        border: none;
+        padding: 5px;
+    }
+
+    /* Offcanvas için ek stiller */
+    .offcanvas {
+        width: 250px;
+        background-color: #f1e4b2;
+        border-left: 3px solid #28a745;
+    }
+
+    .offcanvas-header {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .offcanvas-body .list-group-item {
+        border: none;
+        padding: 10px 0;
+    }
+
+    .offcanvas-body .list-group-item a {
+        color: #3a3a3a;
+        text-decoration: none;
+        font-size: 18px;
+        transition: color 0.3s ease;
+    }
+
+    .offcanvas-body .list-group-item a:hover {
+        color: #28a745;
+    }
+
+    /* Profil fotoğrafı veya ikon için hover efekti */
+    .nav-link img:hover, .fa-user-circle:hover {
+        transform: scale(1.1);
+    }
+
+    /* Hoşgeldin yazısı için stil */
+    .welcome-text {
+        font-family: 'Arial', sans-serif;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+
+    .welcome-text:hover {
+        opacity: 1;
+    }
+
+    /* Şikayet Badge Stili */
+    .complaint-badge {
+        display: inline-block;
+        margin-left: 5px;
+        background-color: green;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    /* Mevcut Zil Badge Stili (Dokunulmadan Kalacak) */
+    .notif-badge {
+        position: absolute;
+        top: -5px;
+        right: -10px;
+        background-color: red;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+    }
+</style>
+
+<!-- JavaScript Kodları -->
+<script>
+    let lastScrollTop = 0;
+    const navbar = document.getElementById("navbar");
+
+    window.addEventListener("scroll", function () {
+        let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (currentScroll > lastScrollTop) {
+            navbar.style.top = "-120px";  
+        } else {
+            navbar.style.top = "0";  
+        }
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
+
+    function createSparkle() {
+        const sparkle = document.createElement("div");
+        sparkle.classList.add("sparkle");
+        sparkle.style.left = `${Math.random() * 100}%`;
+        sparkle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 5000);
+    }
+    setInterval(createSparkle, 300);
+
+    // Mevcut Bildirim Güncelleme Fonksiyonu (Zil için, dokunulmadan kalacak)
+    function updateNotifications() {
+        fetch("{% url 'get_notifications' %}", {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            cache: 'no-store'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Bildirim Data:", data);
+            const notifBadge = document.getElementById('notif-badge');
+            const totalUnreadCount = (data.unread_messages || 0) + (data.pending_friend_requests || 0);
+
+            if (totalUnreadCount > 0) {
+                notifBadge.textContent = totalUnreadCount > 9 ? '9+' : totalUnreadCount;
+                notifBadge.style.display = 'inline-block';
+            } else {
+                notifBadge.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Bildirim güncelleme hatası:', error));
+    }
+
+    // Yeni Şikayet Sayısı Güncelleme Fonksiyonu (Adminler için)
+    function updateComplaintCount() {
+        fetch("{% url 'şikayet_sayısı' %}", {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            cache: 'no-store'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Şikayet Data:", data);
+            const complaintBadge = document.getElementById('complaint-badge');
+            const complaintCount = data.unresolved_complaints || 0;
+
+            if (complaintCount > 0) {
+                complaintBadge.textContent = complaintCount > 9 ? '9+' : complaintCount;
+                complaintBadge.style.display = 'inline-block';
+            } else {
+                complaintBadge.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Şikayet güncelleme hatası:', error));
+    }
+
+    // İlk yüklemede ve her 5 saniyede bir kontrol
+    document.addEventListener("DOMContentLoaded", function() {
+        updateNotifications(); // Mevcut zil sistemi için
+        setInterval(updateNotifications, 5000);
+
+        {% if request.user.is_staff %}
+        updateComplaintCount(); // Şikayet sistemi için (sadece adminler)
+        setInterval(updateComplaintCount, 5000);
+        {% endif %}
+
+        // Zil simgesine tıklama olayı - Profilim sayfasına yönlendirme
+        const notifIcon = document.getElementById('notif-icon');
+        notifIcon.addEventListener('click', function() {
+            window.location.href = "{% url 'profilim' %}";
+        });
+    });
+
+    function confirmLogout(event) {
+        event.preventDefault();
+        let userConfirmed = confirm("Oturumunuzu sonlandırmak istediğinize emin misiniz?");
+        if (userConfirmed) {
+            window.location.href = event.target.href;
+        }
+    }
+</script>
+<!-- Bootstrap JavaScript (Popper dahil) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>

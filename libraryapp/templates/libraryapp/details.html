@@ -1,0 +1,692 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}
+     Kitap Detayları
+{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<style>
+    /* Genel Stiller */
+    body {
+        background-color: #f4f4f9;
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+
+    /* Kitap Bilgisi Bölümü */
+    .book-info {
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-top: 5px solid #28a745;
+    }
+
+    .book-info:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .book-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+        text-transform: capitalize;
+    }
+
+    .book-detail {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        color: #28a745;
+    }
+
+    .book-detail i {
+        font-size: 1.3rem;
+        color: #28a745;
+        margin-right: 12px;
+    }
+
+    .detail-text {
+        font-size: 1.1rem;
+        color: #555;
+    }
+
+    /* Yorum Bölümü */
+    .review-section {
+        background-color: #e9f7f1;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        border: 1px solid #28a745;
+    }
+
+    .review-section h3 {
+        font-size: 2rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .review-item {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        background-color: #fafafa;
+        border-radius: 8px;
+    }
+
+    .review-item:last-child {
+        border-bottom: none;
+    }
+
+    .review-item strong {
+        color: #28a745;
+    }
+
+    .rating i {
+        font-size: 1.2rem;
+        color: #f39c12;
+    }
+
+    /* Form Stilleri */
+    .review-section form {
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: #f4f4f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+
+    .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-submit {
+        width: 100%;
+        max-width: 300px;
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #218838;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary, .btn-success, .btn-danger {
+        border-radius: 8px;
+        padding: 10px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-primary:hover, .btn-success:hover, .btn-danger:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Güncelle Butonunun Rengi */
+    .btn-update {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-update:hover {
+        background-color: #218838;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Buton Aksiyonları */
+    .btn-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+
+    .btn-actions .btn {
+        max-width: 150px;
+        flex: 1;
+    }
+
+    /* Özet ve Okuma Paneli */
+    .summary-panel, .reading-panel {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        border-top: 5px solid #28a745;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .summary-panel:hover, .reading-panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .summary-panel h3, .reading-panel h3 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .summary-content, .reading-content {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        max-height: 400px;
+        overflow-y: auto;
+        font-family: 'Georgia', serif;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    /* Daha Fazla Oku Butonu */
+    .btn-read-more {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        margin-top: 15px;
+    }
+
+    .btn-read-more:hover {
+        background-color: #218838;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modal Stilleri */
+    #readMoreModal .modal-dialog {
+        max-width: 800px;
+        margin-top: 100px;
+    }
+
+    #readMoreModal .modal-content {
+        border-radius: 15px;
+        border: 2px solid #28a745;
+        background: linear-gradient(180deg, #f4f4f9 0%, #ffffff 100%);
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    #readMoreModal .modal-header {
+        border-bottom: none;
+        padding: 20px;
+    }
+
+    #readMoreModal .modal-title {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    #readMoreModal .modal-title i {
+        margin-right: 10px;
+        color: #28a745;
+    }
+
+    #readMoreModal .modal-body {
+        font-size: 1.1rem;
+        color: #333;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        margin: 10px;
+        max-height: 500px;
+        overflow-y: auto;
+        font-family: 'Georgia', serif;
+    }
+
+    #readMoreModal .modal-footer {
+        border-top: none;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    #readMoreModal .btn-secondary {
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    #readMoreModal .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+    }
+
+    /* Yıldız Derecelendirme */
+    .star-rating {
+        display: flex;
+        justify-content: center;
+        font-size: 2rem;
+        gap: 5px;
+    }
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+        color: #ccc;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .star-rating label.active,
+    .star-rating label:hover,
+    .star-rating label.hover {
+        color: #f39c12;
+        transform: scale(1.1);
+    }
+
+    /* Kitap Kapak Resmi */
+    .book-cover-image {
+        width: 80%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    /* Mobil Uyumluluk */
+    @media (max-width: 768px) {
+        .book-info, .summary-panel, .reading-panel {
+            padding: 20px;
+        }
+
+        .book-title, .summary-panel h3, .reading-panel h3 {
+            font-size: 1.8rem;
+        }
+
+        .book-detail {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .review-section {
+            margin-top: 20px;
+        }
+
+        .review-item {
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Modal Güzelleştirme (Dinlenme Modal) */
+    #relaxModal .modal-dialog {
+        margin-top: 180px; /* Navbar’ın altına kaydır */
+    }
+
+    #relaxModal .modal-content {
+        border-radius: 15px;
+        border: 2px solid #28a745;
+        background: linear-gradient(180deg, #f4f4f9 0%, #ffffff 100%);
+        animation: fadeIn 0.5s ease-in-out;
+        z-index: 1056; /* Navbar’ın üstünde */
+    }
+
+    #relaxModal .modal-header {
+        border-bottom: none;
+        padding: 20px;
+    }
+
+    #relaxModal .modal-title {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    #relaxModal .modal-title i {
+        margin-right: 10px;
+        color: #28a745;
+    }
+
+    #relaxModal .modal-body {
+        font-size: 1.2rem;
+        color: #2c3e50;
+        text-align: center;
+        padding: 30px;
+        background-color: #e9f7f1;
+        border-radius: 10px;
+        margin: 10px;
+    }
+
+    #relaxModal .modal-footer {
+        border-top: none;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    #relaxModal .btn-success, #relaxModal .btn-secondary {
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    #relaxModal .btn-success:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    #relaxModal .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Footer için Telif Hakkı Bildirimi Stili */
+    footer {
+        margin-top: 30px;
+        padding: 20px;
+        text-align: center;
+        background-color: #e9f7f1;
+        border-top: 2px solid #28a745;
+        font-size: 0.9rem;
+        color: #555;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Sol Taraf: Kitap Kapak Resmi -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ book.volumeInfo.imageLinks.thumbnail|default:'https://via.placeholder.com/150' }}" class="card-img-top book-cover-image" alt="Kitap Kapak Resmi">
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: Kitap Bilgileri -->
+        <div class="col-md-8 mb-4">
+            <div class="book-info">
+                <h1 class="book-title">{{ book.volumeInfo.title|default:"Başlık Bulunamadı" }}</h1>
+
+                <div class="book-detail"><i class="fas fa-user"></i>
+                    <span class="detail-text"><strong>Yazar:</strong> {{ book.volumeInfo.authors|default:"Yazar bilgisi mevcut değil."|join:", " }}</span>
+                </div>
+                <div class="book-detail"><i class="fas fa-building"></i>
+                    <span class="detail-text"><strong>Yayın Evi:</strong> {{ book.volumeInfo.publisher|default:"Yayın evi bilgisi mevcut değil." }}</span>
+                </div>
+                <div class="book-detail"><i class="fas fa-calendar-alt"></i>
+                    <span class="detail-text"><strong>Yayın Tarihi:</strong> {{ book.volumeInfo.publishedDate|default:"Bilinmiyor" }}</span>
+                </div>
+                <div class="book-detail"><i class="fas fa-book"></i>
+                    <span class="detail-text"><strong>Sayfa Sayısı:</strong> {{ book.volumeInfo.pageCount|default:"Bilinmiyor" }}</span>
+                </div>
+                <div class="book-detail"><i class="fas fa-language"></i>
+                    <span class="detail-text"><strong>Dil:</strong> {{ book.volumeInfo.language|default:"Bilinmiyor"|upper }}</span>
+                </div>
+                <div class="book-detail"><i class="fas fa-tags"></i>
+                    <span class="detail-text"><strong>Kategoriler:</strong> {{ book.volumeInfo.categories|default:"Kategori bilgisi mevcut değil."|join:", " }}</span>
+                </div>
+                
+                <div class="d-flex justify-content-start mt-4">
+                    <a href="{{ book.volumeInfo.infoLink|default:'#' }}" class="btn btn-primary me-3" target="_blank">Daha Fazla Bilgi</a>
+                    {% if book and book.id %}
+                        <a href="{% url 'kitap_ekle' kitap_id=book.id %}" class="btn btn-success">Kitaplığıma Ekle</a>
+                    {% else %}
+                        <button class="btn btn-success" disabled>Kitaplığıma Ekle (Veri Eksik)</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Okuma Paneli (Sadece Gutendex için) -->
+    {% if book.id|slice:":9" == "gutendex_" and book.previewText %}
+    <div class="reading-panel">
+        <h3>📖 Kitap Okuma</h3>
+        <div class="reading-content">{{ book.previewText|safe }}</div>
+        <button type="button" class="btn btn-read-more" data-bs-toggle="modal" data-bs-target="#readMoreModal">Daha Fazla Oku</button>
+        <p><em>Bu içerik <a href="{{ book.sourceLink }}" target="_blank">Project Gutenberg</a>’ten sağlanmaktadır.</em></p>
+    </div>
+
+    <!-- Daha Fazla Oku Modal -->
+    <div class="modal fade" id="readMoreModal" tabindex="-1" aria-labelledby="readMoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="readMoreModalLabel">
+                        <i class="fas fa-book-open"></i> {{ book.volumeInfo.title }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ book.extendedText|safe }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Kapat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Özet Paneli -->
+    <div class="summary-panel">
+        <h3>📚 Kitap Özeti</h3>
+        <div class="summary-content">{{ book.volumeInfo.description|default:"Bu kitap hakkında bir açıklama bulunmamaktadır."|safe }}</div>
+    </div>
+
+    <!-- Yorumlar Bölümü -->
+    <div class="review-section mt-4">
+        <h3>Yorumlar</h3>
+        {% if reviews %}
+            <div class="list-group">
+                {% for review in reviews %}
+                    <div class="review-item p-3 mb-2 border rounded">
+                        <strong>{{ review.user.username }}</strong>
+                        <p>{{ review.content }}</p>
+                        <div class="rating">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if review.user == request.user %}
+                            <form action="{% url 'details' id=book.id %}" method="post" class="review-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="review_id" value="{{ review.id }}">
+                                <div class="form-group">
+                                    <label for="content" class="form-label">Yorumunuzu Düzenleyin:</label>
+                                    <textarea name="content" class="form-control" rows="4">{{ review.content }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rating" class="form-label">Puanınız:</label>
+                                    <div class="star-rating" data-review-id="{{ review.id }}">
+                                        <input type="radio" id="star1_{{ review.id }}" name="rating" value="1" {% if review.rating == 1 %}checked{% endif %}>
+                                        <label for="star1_{{ review.id }}">★</label>
+                                        <input type="radio" id="star2_{{ review.id }}" name="rating" value="2" {% if review.rating == 2 %}checked{% endif %}>
+                                        <label for="star2_{{ review.id }}">★</label>
+                                        <input type="radio" id="star3_{{ review.id }}" name="rating" value="3" {% if review.rating == 3 %}checked{% endif %}>
+                                        <label for="star3_{{ review.id }}">★</label>
+                                        <input type="radio" id="star4_{{ review.id }}" name="rating" value="4" {% if review.rating == 4 %}checked{% endif %}>
+                                        <label for="star4_{{ review.id }}">★</label>
+                                        <input type="radio" id="star5_{{ review.id }}" name="rating" value="5" {% if review.rating == 5 %}checked{% endif %}>
+                                        <label for="star5_{{ review.id }}">★</label>
+                                    </div>
+                                </div>
+                                <div class="btn-actions">
+                                    <button type="submit" name="update" class="btn btn-update">Güncelle</button>
+                                    <form action="{% url 'details' id=book.id %}" method="post" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="review_id" value="{{ review.id }}">
+                                        <button type="submit" name="delete" class="btn btn-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Henüz yorum yapılmamış.</p>
+        {% endif %}
+    </div>
+
+    <!-- Yorum Yapma Formu -->
+    {% if user.is_authenticated and not user_review %}
+    <div class="review-section mt-4">
+        <h3 class="section-title">Yorum Yap</h3>
+        <form method="POST" class="review-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="rating" class="form-label">Puanınız:</label>
+                <div class="star-rating" data-review-id="new">
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1">★</label>
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2">★</label>
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3">★</label>
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4">★</label>
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5">★</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content" class="form-label">Yorumunuz:</label>
+                <textarea name="content" class="form-control" rows="4" placeholder="Yorumunuzu buraya yazın..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-submit">Yorum Gönder</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Dinlenme Onay Modal -->
+    <div class="modal fade" id="relaxModal" tabindex="-1" aria-labelledby="relaxModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="relaxModalLabel">
+                        <i class="fas fa-leaf"></i> Mola Zamanı
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <i class="fas fa-coffee fa-2x mb-3" style="color: #28a745;"></i><br>
+                    Kanka, gözlerin yorulmasın! Bi’ mola verip dinlenmek ister misin? 🌿
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-book-open"></i> Devam Et
+                    </button>
+                    <button type="button" class="btn btn-success" id="goRelaxBtn">
+                        <i class="fas fa-coffee"></i> Mola Ver
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+{% endblock %}
+
+{% block js_files %}
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Yıldız Derecelendirme
+        const starGroups = document.querySelectorAll(".star-rating");
+        starGroups.forEach((group) => {
+            const inputs = group.querySelectorAll("input");
+            const labels = group.querySelectorAll("label");
+
+            // İlk yüklemede mevcut rating’i göster
+            inputs.forEach((input) => {
+                if (input.checked) {
+                    const value = parseInt(input.value);
+                    labels.forEach((label, index) => {
+                        if (index < value) {
+                            label.classList.add("active");
+                        } else {
+                            label.classList.remove("active");
+                        }
+                    });
+                }
+            });
+
+            // Tıklama eventi
+            inputs.forEach((input) => {
+                input.addEventListener("change", () => {
+                    const value = parseInt(input.value);
+                    labels.forEach((label, index) => {
+                        if (index < value) {
+                            label.classList.add("active");
+                        } else {
+                            label.classList.remove("active");
+                        }
+                    });
+                });
+            });
+
+            // Hover efektleri
+            labels.forEach((label, index) => {
+                label.addEventListener("mouseenter", () => {
+                    for (let i = 0; i <= index; i++) {
+                        labels[i].classList.add("hover");
+                    }
+                });
+                label.addEventListener("mouseleave", () => {
+                    labels.forEach((l) => l.classList.remove("hover"));
+                });
+            });
+        });
+
+        // Dinlenme Modal’ını Aç
+        setTimeout(function() {
+            const modal = new bootstrap.Modal(document.getElementById('relaxModal'));
+            document.getElementById('goRelaxBtn').onclick = function() {
+                window.location.href = "{% url 'relax_page' %}";
+            };
+            modal.show();
+        }, 3000);
+    });
+</script>
+{% endblock %}
