@@ -191,7 +191,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'account': {  # account uygulaması için logger
+        'account': {  # account uygulaması için loggesr
             'handlers': ['file', 'console'],
             'level': 'DEBUG',
             'propagate': False,
