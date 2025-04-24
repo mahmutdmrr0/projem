@@ -250,7 +250,7 @@ def handle_general_chat(message):
     except Exception as e:
         print(f"General error in handle_general_chat: {str(e)}")  # Konsola log
         return "Kanka, ufak bir karışıklık oldu, bi daha dene! 😅"
-
+@login_required
 def chatbot_page(request):
     categories = Category.objects.filter(name__in=ALLOWED_CATEGORIES.keys())
     if not categories.exists():
