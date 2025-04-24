@@ -315,7 +315,26 @@
             const messageText = document.getElementById('message-text');
             const closeMessage = document.getElementById('close-message');
             let lastCount = 0; // Son bildirim sayısını takip et
-
+            let loadingTimeout; // Loading için zamanlayıcı
+    
+            // Loading efektini göster ve 30 saniye sınırı koy
+            function showLoading() {
+                loadingContainer.classList.remove('hidden');
+                console.log("Loading gösteriliyor");
+                // 30 saniye sonra gizle (sayfa yüklense bile)
+                loadingTimeout = setTimeout(() => {
+                    loadingContainer.classList.add('hidden');
+                    console.log("Loading 30 saniye sınırı: gizlendi");
+                }, 30000);
+            }
+    
+            // Loading efektini gizle ve zamanlayıcıyı temizle
+            function hideLoading() {
+                clearTimeout(loadingTimeout);
+                loadingContainer.classList.add('hidden');
+                console.log("Loading gizlendi");
+            }
+    
             // Bildirimleri kontrol eden fonksiyon
             function checkNotifications() {
                 fetch("{% url 'get_notifications' %}", {
@@ -327,7 +346,7 @@
                 .then(data => {
                     console.log("Notifications:", data);
                     const unreadCount = data.notifications ? data.notifications.length : 0;
-
+    
                     // Popup Güncellemesi
                     if (unreadCount > 0) {
                         notificationContent.innerHTML = '';
@@ -347,7 +366,7 @@
                         notificationPopup.style.display = 'none';
                         notificationContent.innerHTML = '';
                     }
-
+    
                     // Navbar Badge Güncellemesi
                     if (unreadCount > 0) {
                         notifBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
@@ -355,7 +374,7 @@
                     } else {
                         notifBadge.style.display = 'none';
                     }
-
+    
                     // Yeni mesaj geldiğinde mesaj kutusu göster
                     if (unreadCount > lastCount && unreadCount > 0) {
                         const latestNotif = data.notifications[data.notifications.length - 1];
@@ -366,11 +385,11 @@
                 })
                 .catch(error => console.error('Bildirim hatası:', error));
             }
-
+    
             // İlk yüklemede ve her 5 saniyede bir kontrol
             checkNotifications();
             setInterval(checkNotifications, 5000);
-
+    
             // "Cevapla" linkine tıklayınca anında kontrol et
             document.addEventListener('click', function(e) {
                 const notifLink = e.target.closest('.notif-link');
@@ -378,26 +397,25 @@
                     checkNotifications();
                 }
             });
-
+    
             // Mesaj kutusunu kapatma
             closeMessage.addEventListener('click', function() {
                 messageBox.style.display = 'none';
             });
-
+    
             // Loading animasyonu: Sayfa yüklendiğinde göster
-            loadingContainer.classList.remove('hidden');
-            console.log("Loading gösteriliyor");
+            showLoading();
         });
-
+    
         // Sayfa tamamen yüklendiğinde loading gizle
         window.addEventListener("load", function() {
             const loadingContainer = document.querySelector('.loading-container');
             setTimeout(() => {
                 loadingContainer.classList.add('hidden');
-                console.log("Loading gizlendi");
+                console.log("Loading gizlendi (load eventi)");
             }, 1000);
         });
-
+    
         // Önbellekten yüklenirse loading gizle
         window.addEventListener("pageshow", function(event) {
             const loadingContainer = document.querySelector('.loading-container');
@@ -406,14 +424,14 @@
                 console.log("Sayfa önbellekten yüklendi, loading gizlendi");
             }
         });
-
+    
         // Geri tuşuna basıldığında loading gizle
         window.addEventListener("popstate", function() {
             const loadingContainer = document.querySelector('.loading-container');
             loadingContainer.classList.add('hidden');
             console.log("Geri tuşuna basıldı, loading gizlendi");
         });
-
+    
         // Linke tıklanınca loading göster
         document.addEventListener("click", function(e) {
             const link = e.target.closest('a');
@@ -421,6 +439,15 @@
                 const loadingContainer = document.querySelector('.loading-container');
                 loadingContainer.classList.remove('hidden');
                 console.log("Linke tıklandı, loading gösteriliyor");
+            }
+        });
+    
+        // Sekme odak kontrolü (opsiyonel, bug’ı azaltır)
+        document.addEventListener("visibilitychange", function() {
+            const loadingContainer = document.querySelector('.loading-container');
+            if (document.visibilityState === 'visible' && document.readyState === 'complete') {
+                loadingContainer.classList.add('hidden');
+                console.log("Sekme aktif, sayfa yüklendi, loading gizlendi");
             }
         });
     </script>
