@@ -679,14 +679,26 @@
             });
         });
 
-        // Dinlenme Modal’ını Aç
-        setTimeout(function() {
-            const modal = new bootstrap.Modal(document.getElementById('relaxModal'));
-            document.getElementById('goRelaxBtn').onclick = function() {
-                window.location.href = "{% url 'relax_page' %}";
-            };
-            modal.show();
-        }, 3000);
-    });
+       // Dinlenme Modal’ını Her 1 Dakikada Bir Aç
+       const modalElement = document.getElementById('relaxModal');
+       const modal = new bootstrap.Modal(modalElement);
+
+       function showRelaxModal() {
+           modal.show();
+       }
+
+       // İlk açılış için 1 dakika bekle
+       setTimeout(showRelaxModal, 60000);
+
+       // Mola Ver butonu
+       document.getElementById('goRelaxBtn').onclick = function() {
+           window.location.href = "{% url 'relax_page' %}";
+       };
+
+       // Modal kapandığında 1 dakika sonra tekrar aç
+       modalElement.addEventListener('hidden.bs.modal', function () {
+           setTimeout(showRelaxModal, 60000);
+       });
+   });
 </script>
 {% endblock %}
