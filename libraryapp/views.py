@@ -555,50 +555,49 @@ def kitaplik(request):
 
 
 @login_required
-def kitap_ekle(request, kitap_id):  
+def kitap_ekle(request, kitap_id):
     if kitap_id.startswith('gutendex_'):
         book_id_raw = kitap_id.replace('gutendex_', '')
         url = f"https://gutendex.com/books/{book_id_raw}/"
-        response = requests.get(url)
-        if response.status_code != 200:
-            messages.error(request, 'Kitap verileri alınırken bir hata oluştu!')
-            return redirect('index')
-        
-        book_data = response.json()
-        formats = book_data.get('formats', {})
-
-        authors = book_data.get('authors', [])
-        author_name = authors[0].get('name', 'Yazar Bilgisi Bulunamadı') if authors else 'Yazar Bilgisi Bulunamadı'
-
-        new_book = BookLibrary(
-            user=request.user,
-            book_id=kitap_id, 
-            title=book_data.get('title', 'Başlık Bulunamadı'),
-            author=author_name,
-            image=formats.get('image/jpeg', ''),
-            category=', '.join(book_data.get('subjects', ['Bilinmiyor'])),
-        )
-        new_book.save()
-        messages.success(request, 'Kitap başarıyla eklendi!')
-        return redirect('kitaplik')
-
-    else:
-        # Google Books ID'sini temizle (eğer 'google_' öneki varsa)
-        clean_kitap_id = kitap_id.replace('google_', '') if kitap_id.startswith('google_') else kitap_id
-        # Settings'den URL ve API key kullanarak isteği oluştur
-        url = f"{settings.GOOGLE_BOOKS_API_KEY}/{clean_kitap_id}?key={settings.GOOGLE_BOOKS_API_KEY}"
         try:
             response = requests.get(url, timeout=5)
-            response.raise_for_status()  # Hata varsa exception fırlat
+            response.raise_for_status()
+            book_data = response.json()
+            formats = book_data.get('formats', {})
+
+            authors = book_data.get('authors', [])
+            author_name = authors[0].get('name', 'Yazar Bilgisi Bulunamadı') if authors else 'Yazar Bilgisi Bulunamadı'
+
+            new_book = BookLibrary(
+                user=request.user,
+                book_id=kitap_id,
+                title=book_data.get('title', 'Başlık Bulunamadı'),
+                author=author_name,
+                image=formats.get('image/jpeg', ''),
+                category=', '.join(book_data.get('subjects', ['Bilinmiyor'])),
+            )
+            new_book.save()
+            messages.success(request, 'Kitap başarıyla eklendi!')
+            return redirect('kitaplik')
+        except requests.RequestException as e:
+            print(f"Gutendex API hatası: {e} - Status Code: {response.status_code if 'response' in locals() else 'Yok'}")
+            messages.error(request, 'Kitap verileri alınırken bir hata oluştu!')
+            return redirect('kitaplik')
+    else:
+        clean_kitap_id = kitap_id.replace('google_', '') if kitap_id.startswith('google_') else kitap_id
+        url = f"{settings.BASE_URL}/{clean_kitap_id}?key={settings.GOOGLE_BOOKS_API_KEY}"
+        try:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
             book_data = response.json()
             volume_info = book_data.get('volumeInfo', {})
-            
+
             authors = volume_info.get('authors', ['Yazar Bilgisi Bulunamadı'])
             author_name = authors[0] if authors else 'Yazar Bilgisi Bulunamadı'
 
             new_book = BookLibrary(
                 user=request.user,
-                book_id=kitap_id,  # Orijinal kitap_id'yi kullanıyoruz
+                book_id=kitap_id,
                 title=volume_info.get('title', 'Başlık Bulunamadı'),
                 author=author_name,
                 image=volume_info.get('imageLinks', {}).get('thumbnail', ''),
@@ -607,9 +606,8 @@ def kitap_ekle(request, kitap_id):
             new_book.save()
             messages.success(request, 'Kitap başarıyla eklendi!')
             return redirect('kitaplik')
-        
         except requests.RequestException as e:
-            print(f"Google Books API hatası: {e}")  # Hata detayını konsola yaz
+            print(f"Google Books API hatası: {e} - Status Code: {response.status_code if 'response' in locals() else 'Yok'}")
             messages.error(request, 'Kitap verileri alınırken bir hata oluştu!')
             return redirect('kitaplik')
 
