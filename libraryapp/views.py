@@ -644,7 +644,7 @@ def get_recommended_books(user):
     for book in user_books:
         # Kitap başlığı ve yazarı ile arama yap
         query = f"{book.title} inauthor:{book.author}" if book.author else book.title
-        url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=9"
+        url = f"{settings.BASE_URL}?q={query}&key={settings.GOOGLE_BOOKS_API_KEY}&maxResults=9"
         try:
             response = requests.get(url, timeout=5)
             response.raise_for_status()  # Hata varsa exception fırlat
@@ -689,7 +689,7 @@ def index(request):
     
     # Popüler Kitaplar
     popular_books = []
-    popular_url = "https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=relevance&maxResults=9"
+    popular_url = f"{settings.BASE_URL}?q=subject:fiction&key={settings.GOOGLE_BOOKS_API_KEY}&orderBy=relevance&maxResults=9"
     try:
         popular_response = requests.get(popular_url, timeout=5)
         popular_response.raise_for_status()
@@ -792,7 +792,7 @@ def search(request):
 
     # Google Books API
     try:
-        google_url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=5"
+        google_url = f"{settings.BASE_URL}?q={query}&key={settings.GOOGLE_BOOKS_API_KEY}&maxResults=5"
         google_response = requests.get(google_url)
         google_response.raise_for_status()
         google_data = google_response.json()
@@ -871,7 +871,7 @@ def book_list(request, category_id=None):
     # Toplam 100 kitap çekmek için 3 istek
     for start_index in [0, 40, 80]:
         max_results = 40 if start_index < 80 else 20  # Son istekte 20 çekiyoruz (100’e tamamlamak için)
-        url = f"https://www.googleapis.com/books/v1/volumes?q={query}&key={api_key}&langRestrict=tr&maxResults={max_results}&startIndex={start_index}"
+        url = f"{settings.BASE_URL}?q={query}&key={settings.GOOGLE_BOOKS_API_KEY}&langRestrict=tr&maxResults={max_results}&startIndex={start_index}"
         response = requests.get(url)
         
         if response.status_code == 200:
