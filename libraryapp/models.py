@@ -22,13 +22,13 @@ class Book(models.Model):
     title = models.CharField(max_length=255, verbose_name="Başlık")
     description = models.TextField(blank=True, null=True, verbose_name="Açıklama")
     page_count = models.IntegerField(blank=True, null=True, verbose_name="Sayfa Sayısı")
-    cover_url = models.URLField(blank=True, null=True, verbose_name="Kapak URL")
-    info_link = models.URLField(blank=True, null=True, verbose_name="Bilgi Linki")
+    cover_url = models.URLField(max_length=500, blank=True, null=True, verbose_name="Kapak URL")  # 200 -> 500
+    info_link = models.URLField(max_length=500, blank=True, null=True, verbose_name="Bilgi Linki")  # 200 -> 500
     price = models.FloatField(blank=True, null=True, verbose_name="Fiyat")
     publisher = models.CharField(max_length=255, blank=True, null=True, verbose_name="Yayıncı")
     published_date = models.CharField(max_length=50, blank=True, null=True, verbose_name="Yayın Tarihi")
-    preview_link = models.URLField(blank=True, null=True, verbose_name="Önizleme Linki")
-    created_at = models.DateTimeField(default=timezone.now)  # Yeni alan
+    preview_link = models.URLField(max_length=500, blank=True, null=True, verbose_name="Önizleme Linki")  # 200 -> 500
+    created_at = models.DateTimeField(default=timezone.now)
     categories = models.ManyToManyField(Category, related_name='books', verbose_name="Kategoriler")
     related_books = models.ManyToManyField('self', blank=True, verbose_name="İlgili Kitaplar")
 
@@ -37,7 +37,6 @@ class Book(models.Model):
 
     @property
     def average_rating(self):
-        """Kitabın ortalama puanını hesaplayan fonksiyon."""
         reviews = self.reviews.all()
         if reviews:
             total_rating = sum([review.rating for review in reviews])
@@ -53,12 +52,11 @@ class BookLibrary(models.Model):
     book_id = models.CharField(max_length=150, verbose_name="Kitap ID")
     title = models.CharField(max_length=255, verbose_name="Başlık")
     author = models.CharField(max_length=255, blank=True, null=True, verbose_name="Yazar")
-    image = models.URLField(blank=True, null=True, verbose_name="Resim URL")
-    category = models.CharField(max_length=255, blank=True, null=True, verbose_name="Kategori")
+    image = models.URLField(max_length=500, blank=True, null=True, verbose_name="Resim URL")  # 200 -> 500
+    category = models.CharField(max_length=500, blank=True, null=True, verbose_name="Kategori")  # 255 -> 500
     rating = models.IntegerField(default=0, choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')], verbose_name="Puan")
-    info_link = models.URLField(blank=True, null=True, verbose_name="Bilgi Linki")
-    
-    
+    info_link = models.URLField(max_length=500, blank=True, null=True, verbose_name="Bilgi Linki")  # 200 -> 500
+
     def __str__(self):
         return f"{self.user.username} - {self.title}"
 

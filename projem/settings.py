@@ -17,8 +17,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['example.com', 'localhost', '127.0.0.1', 'projem-3x86.onrender.com']
 
-SITE_URL = 'https://madbook.onrender.com'
-CSRF_TRUSTED_ORIGINS = ['https://madbook.onrender.com']
+SITE_URL = 'https://projem-3x86.onrender.com'
+CSRF_TRUSTED_ORIGINS = ['https://projem-3x86.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
