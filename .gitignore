@@ -1,26 +1,24 @@
 # Hassas dosyalar
 .env
-*.env.*
+.env.
 *.sqlite3
 *.sqlite3.backup
+data.json
 
 # Python derleme dosyaları
 *.pyc
-__pycache__/
+_pycache_/
 *.pyo
 *.pyd
 
 # Django statik ve medya dosyaları
 /staticfiles/
 /media/
-/collectstatic/
 
 # Sanal ortamlar
 venv/
 env/
 .venv/
-pip-log.txt
-Pipfile.lock
 
 # Log dosyaları
 *.log
@@ -28,17 +26,12 @@ Pipfile.lock
 # IDE ve editör dosyaları
 .vscode/
 .idea/
-*.swp
-*.swo
 .DS_Store
 
 # Test ve geliştirme araçları
 .pytest_cache/
-coverage/
 .coverage
-*.bak
-*.tmp
 
 # Geçici dosyalar
 *.cache
-*.pid
+*.tmp
