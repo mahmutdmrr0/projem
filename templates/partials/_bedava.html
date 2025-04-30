@@ -1,6 +1,6 @@
 <!-- Bedava Kitaplar -->
 <div class="free-books container my-5">
-    <h2 class="free-books-title">Bedava Kitaplar</h2>
+    <h2 class="free-books-title">Ücretsiz Kitaplar</h2>
 
     {% if grouped_free_books %}
         <div id="free-books-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -15,7 +15,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title">
                                                 {{ book.title }}
-                                                <i class="fas fa-book text-danger ms-2" title="Bedava Kitap"></i>
+                                                <i class="fas fa-book text-danger ms-2" title="Ücretsiz Kitap"></i>
                                             </h5>
                                             <p class="card-text text-muted">Yazar: {{ book.author }}</p>
                                             <p class="card-text text-muted description">{{ book.description }}</p>
