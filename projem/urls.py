@@ -15,3 +15,8 @@ urlpatterns = [
 # Medya ve statik dosyaları her zaman sun
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+# Medya dosyalarını DEBUG=False iken sunmak için
+if not settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
