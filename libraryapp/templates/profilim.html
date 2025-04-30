@@ -375,11 +375,22 @@
             line-height: 18px;
             display: none;
         }
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-circle.active {
+            background-color: green;
+        }
+        .status-circle.inactive {
+            background-color: red;
+        }
     </style>
 {% endblock %}
-
 {% block page_title %}
-    Profilim
+     Profilim
 {% endblock %}
 
 {% block content %}
@@ -405,7 +416,7 @@
             <form method="POST" enctype="multipart/form-data" class="profile-form">
                 {% csrf_token %}
                 {% for field in form %}
-                    {% if field.name == "bio" %}
+                    {% if field.name != "profile_picture" %}
                         <div class="form-group">
                             {{ field }}
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -417,7 +428,7 @@
                         <label>Fotoğraf Yükle</label>
                         <span class="photo-upload-icon">📸</span>
                         <p>Sürükle & bırak veya tıkla</p>
-                        {{ form.profile_picture }}
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
                     </div>
                     <div class="photo-preview" id="photo-preview">
                         <img id="preview-image" src="" alt="Önizleme">
@@ -438,7 +449,7 @@
             </div>
         </div>
 
-        <!-- Aktif Kullanıcılar -->
+                <!-- Aktif Kullanıcılar -->
         <div class="panel active-users">
             <h2>Aktif Kullanıcılar</h2>
             <div class="search-form">
@@ -452,7 +463,7 @@
                     <li>
                         <span>{{ u.username }}</span>
                         <div>
-                            <span class="status-circle {% if user_status.u.id %}active{% else %}inactive{% endif %}"></span>
+                            <span class="status-circle active"></span>
                             <a href="{% url 'user_profile' u.username %}" class="btn btn-success">👤 Profil</a>
                         </div>
                     </li>
@@ -462,19 +473,19 @@
             </ul>
             <!-- Sayfalama -->
             <div class="pagination">
-                <span class="page-num {% if not users_page.has_previous %}disabled{% endif %}">
-                    {% if users_page.has_previous %}
-                        <a href="?page_active={{ users_page.previous_page_number }}&q={{ search_query }}">Önceki</a>
+                <span class="page-num {% if not active_users_page.has_previous %}disabled{% endif %}">
+                    {% if active_users_page.has_previous %}
+                        <a href="?page_active={{ active_users_page.previous_page_number }}&q={{ search_query }}">Önceki</a>
                     {% else %}
                         <span>Önceki</span>
                     {% endif %}
                 </span>
                 <span class="page-num">
-                    Sayfa {{ users_page.number }} / {{ users_page.paginator.num_pages }}
+                    Sayfa {{ active_users_page.number }} / {{ active_users_page.paginator.num_pages }}
                 </span>
-                <span class="page-num {% if not users_page.has_next %}disabled{% endif %}">
-                    {% if users_page.has_next %}
-                        <a href="?page_active={{ users_page.next_page_number }}&q={{ search_query }}">Sonraki</a>
+                <span class="page-num {% if not active_users_page.has_next %}disabled{% endif %}">
+                    {% if active_users_page.has_next %}
+                        <a href="?page_active={{ active_users_page.next_page_number }}&q={{ search_query }}">Sonraki</a>
                     {% else %}
                         <span>Sonraki</span>
                     {% endif %}
@@ -565,7 +576,7 @@
 {% block js_files %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const fileInput = document.querySelector('input[name="profile_picture"]');
+        const fileInput = document.getElementById('profile_picture');
         const uploadArea = document.getElementById('photo-upload-area');
         const preview = document.getElementById('photo-preview');
         const previewImage = document.getElementById('preview-image');

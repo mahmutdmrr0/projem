@@ -27,10 +27,9 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['bio', 'profile_picture']
-        widgets = {
-            'bio': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Biyografinizi yazın...'}),
-            'profile_picture': forms.FileInput(attrs={'accept': 'image/*'}),
-        }
+        
+    bio = forms.CharField(widget=forms.Textarea, required=False, label="Biyografi")
+    profile_picture = forms.ImageField(required=False, label="Profil Fotoğrafı")
 
 
 class ComplaintForm(forms.ModelForm):

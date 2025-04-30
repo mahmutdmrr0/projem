@@ -369,8 +369,7 @@ def profilim(request):
             messages.success(request, "Profiliniz güncellendi!")
             return redirect('profilim')
         else:
-            print("Form hataları:", form.errors)  # Hataları terminale yaz
-            messages.error(request, f"Profil güncellenirken hata: {form.errors}")
+            messages.error(request, "Profil güncellenirken bir hata oluştu.")
     else:
         form = UserProfileForm(instance=profile)
 
@@ -382,6 +381,11 @@ def profilim(request):
     user_ids = [session.get_decoded().get('_auth_user_id') for session in active_sessions if session.get_decoded().get('_auth_user_id')]
     active_users = User.objects.filter(id__in=user_ids)
 
+    # Hata ayıklama: Oturum açık kullanıcıları kontrol et
+    all_users = User.objects.all()[:5]  # İlk 5 kullanıcıyı al
+    for u in all_users:
+        print(f"Kullanıcı: {u.username}, Last Login: {u.last_login}")
+
     # Arama ve kullanıcı filtreleme
     search_query = request.GET.get('q', '')
     if search_query:
@@ -390,7 +394,7 @@ def profilim(request):
         users = active_users
 
     # Her kullanıcı için aktiflik durumunu belirle
-    user_status = {u.id: u.id in user_ids for u in users}
+    user_status = {u.id: u.id in user_ids for u in users}  # Aktifse True, pasifse False
 
     # Aktif kullanıcılar için sayfalama
     users_paginator = Paginator(users, 5)
@@ -413,6 +417,12 @@ def profilim(request):
     rec_page_number = request.GET.get('page', 1)
     recommended_books_page = rec_paginator.get_page(rec_page_number)
 
+    # Hata ayıklama
+    print(f"Aktif kullanıcı sayısı: {active_users.count()}")
+    print(f"Filtrelenmiş kullanıcı sayısı: {users.count()}")
+    for u in users:
+        print(f"Arama sonucu kullanıcı: {u.username}, Aktif mi: {user_status[u.id]}")
+
     context = {
         'user': user,
         'form': form,
@@ -425,7 +435,7 @@ def profilim(request):
         'friend_requests': friend_requests,
         'friends': friends,
         'recommended_to_me': recommended_books_page,
-        'user_status': user_status,
+        'user_status': user_status,  # Aktif/pasif durumları context'e eklendi
     }
     return render(request, 'profilim.html', context)
 
@@ -434,8 +444,9 @@ def user_profile(request, username):
     profile_user = get_object_or_404(User, username=username)
     user_books = BookLibrary.objects.filter(user=profile_user)
     
+    
     # Sayfalama işlemi
-    paginator = Paginator(user_books, 4)
+    paginator = Paginator(user_books, 4)  # Sayfada 4 kitap göster
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
