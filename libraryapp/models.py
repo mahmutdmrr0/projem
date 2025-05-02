@@ -95,14 +95,14 @@ class Review(models.Model):
         ]
 
 class RecommendedBook(models.Model):
-    title = models.CharField(max_length=255, verbose_name="Başlık")
-    author = models.CharField(max_length=255, verbose_name="Yazar")
-    image = models.URLField(verbose_name="Resim URL")
+    title = models.CharField(max_length=500, verbose_name="Başlık")  # 255 -> 500
+    author = models.CharField(max_length=500, verbose_name="Yazar")  # 255 -> 500
+    image = models.URLField(max_length=500, blank=True, null=True, verbose_name="Resim URL")  # max_length eklendi
     published_date = models.DateField(null=True, blank=True, verbose_name="Yayın Tarihi")
-    info_link = models.URLField(verbose_name="Bilgi Linki")
+    info_link = models.URLField(max_length=500, blank=True, null=True, verbose_name="Bilgi Linki")  # max_length eklendi
     user = models.ForeignKey(User, related_name='recommended_books', on_delete=models.CASCADE, verbose_name="Kullanıcı")
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, default=1, verbose_name="Gönderen")  # Öneriyi yapan
-    rating = models.IntegerField(default=0, choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')], verbose_name="Puan")  # Puan alanı
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, default=1, verbose_name="Gönderen")
+    rating = models.IntegerField(default=0, choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')], verbose_name="Puan")
 
     def __str__(self):
         return self.title
