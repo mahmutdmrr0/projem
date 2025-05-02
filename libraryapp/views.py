@@ -1,3 +1,4 @@
+import logging
 from pyexpat.errors import messages
 import re
 from django.core.paginator import Paginator 
@@ -351,15 +352,17 @@ def send_message(request, username):
         'all_messages': all_messages,
     })
 
+# Logger'ı tanımla
+logger = logging.getLogger(__name__)
+
 @login_required
 def profilim(request):
     user = request.user
     
-    # Kullanıcı profili yoksa oluştur
-    try:
-        profile = user.userprofile
-    except UserProfile.DoesNotExist:
-        profile = UserProfile.objects.create(user=user)
+    # Kullanıcı profili yoksa oluştur (get_or_create ile güvenli)
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    if created:
+        logger.info(f"Yeni profil oluşturuldu: {user.username}")
 
     # Profil güncelleme formu
     if request.method == 'POST':
@@ -367,9 +370,13 @@ def profilim(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Profiliniz güncellendi!")
+            # Cloudinary URL'sini güvenli şekilde log'la
+            profile_picture_url = profile.profile_picture.url if profile.profile_picture else 'Yok'
+            logger.info(f"Profil güncellendi: {user.username}, Fotoğraf: {profile_picture_url}")
             return redirect('profilim')
         else:
             messages.error(request, "Profil güncellenirken bir hata oluştu.")
+            logger.error(f"Form hataları: {form.errors}")
     else:
         form = UserProfileForm(instance=profile)
 
@@ -435,7 +442,7 @@ def profilim(request):
         'friend_requests': friend_requests,
         'friends': friends,
         'recommended_to_me': recommended_books_page,
-        'user_status': user_status,  # Aktif/pasif durumları context'e eklendi
+        'user_status': user_status,
     }
     return render(request, 'profilim.html', context)
 
