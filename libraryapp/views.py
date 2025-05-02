@@ -1,4 +1,3 @@
-import logging
 from pyexpat.errors import messages
 import re
 from django.core.paginator import Paginator 
@@ -352,16 +351,15 @@ def send_message(request, username):
         'all_messages': all_messages,
     })
 
-logger = logging.getLogger(__name__)
-
 @login_required
 def profilim(request):
     user = request.user
     
     # Kullanıcı profili yoksa oluştur
-    profile, created = UserProfile.objects.get_or_create(user=user)
-    if created:
-        logger.info(f"Yeni profil oluşturuldu: {user.username}")
+    try:
+        profile = user.userprofile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=user)
 
     # Profil güncelleme formu
     if request.method == 'POST':
@@ -369,21 +367,24 @@ def profilim(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Profiliniz güncellendi!")
-            logger.info(f"Profil güncellendi: {user.username}, Fotoğraf: {profile.profile_picture.url if profile.profile_picture else 'Yok'}")
             return redirect('profilim')
         else:
-            messages.error(request, "Profil güncellenirken hata oluştu. Lütfen formu kontrol edin.")
-            logger.error(f"Form hataları: {form.errors}")
+            messages.error(request, "Profil güncellenirken bir hata oluştu.")
     else:
         form = UserProfileForm(instance=profile)
 
     # Toplam kullanıcı sayısı
     total_users = User.objects.count()
 
-    # Aktif kullanıcılar
+    # Aktif kullanıcılar (oturumu açık olanlar)
     active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
     user_ids = [session.get_decoded().get('_auth_user_id') for session in active_sessions if session.get_decoded().get('_auth_user_id')]
     active_users = User.objects.filter(id__in=user_ids)
+
+    # Hata ayıklama: Oturum açık kullanıcıları kontrol et
+    all_users = User.objects.all()[:5]  # İlk 5 kullanıcıyı al
+    for u in all_users:
+        print(f"Kullanıcı: {u.username}, Last Login: {u.last_login}")
 
     # Arama ve kullanıcı filtreleme
     search_query = request.GET.get('q', '')
@@ -393,7 +394,7 @@ def profilim(request):
         users = active_users
 
     # Her kullanıcı için aktiflik durumunu belirle
-    user_status = {u.id: u.id in user_ids for u in users}
+    user_status = {u.id: u.id in user_ids for u in users}  # Aktifse True, pasifse False
 
     # Aktif kullanıcılar için sayfalama
     users_paginator = Paginator(users, 5)
@@ -416,11 +417,11 @@ def profilim(request):
     rec_page_number = request.GET.get('page', 1)
     recommended_books_page = rec_paginator.get_page(rec_page_number)
 
-    # Hata ayıklama logları
-    logger.debug(f"Aktif kullanıcı sayısı: {active_users.count()}")
-    logger.debug(f"Filtrelenmiş kullanıcı sayısı: {users.count()}")
+    # Hata ayıklama
+    print(f"Aktif kullanıcı sayısı: {active_users.count()}")
+    print(f"Filtrelenmiş kullanıcı sayısı: {users.count()}")
     for u in users:
-        logger.debug(f"Arama sonucu kullanıcı: {u.username}, Aktif mi: {user_status[u.id]}")
+        print(f"Arama sonucu kullanıcı: {u.username}, Aktif mi: {user_status[u.id]}")
 
     context = {
         'user': user,
@@ -434,9 +435,9 @@ def profilim(request):
         'friend_requests': friend_requests,
         'friends': friends,
         'recommended_to_me': recommended_books_page,
-        'user_status': user_status,
+        'user_status': user_status,  # Aktif/pasif durumları context'e eklendi
     }
-    return render(request, 'account/profilim.html', context)
+    return render(request, 'profilim.html', context)
 
 @login_required
 def user_profile(request, username):

@@ -56,11 +56,6 @@
             color: #155724;
             margin: 10px 0;
         }
-        .form-error {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 5px;
-        }
 
         /* Formlar */
         .form-group {
@@ -380,10 +375,22 @@
             line-height: 18px;
             display: none;
         }
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-circle.active {
+            background-color: green;
+        }
+        .status-circle.inactive {
+            background-color: red;
+        }
     </style>
 {% endblock %}
 {% block page_title %}
-    Profilim
+     Profilim
 {% endblock %}
 
 {% block content %}
@@ -400,7 +407,7 @@
             <p><strong>E-Posta:</strong> {{ user.email }}</p>
             <p><strong>Biyografi:</strong> {{ user.userprofile.bio|default:"Biyografi eklenmemiş." }}</p>
             <p><strong>Toplam Kullanıcı:</strong> {{ total_users }}</p>
-            <p><strong>Aktif Kullanıcı:</strong> {{ active_users_count }}</p>
+            <p><strong>Aktif Kullanıcı:</strong> {{ active_users.count }}</p>
         </div>
 
         <!-- Profilimi Güncelle -->
@@ -413,9 +420,6 @@
                         <div class="form-group">
                             {{ field }}
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {% if field.errors %}
-                                <p class="form-error">{{ field.errors }}</p>
-                            {% endif %}
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -430,9 +434,6 @@
                         <img id="preview-image" src="" alt="Önizleme">
                         <button type="button" class="remove-photo-btn" id="remove-photo-btn">Kaldır</button>
                     </div>
-                    {% if form.profile_picture.errors %}
-                        <p class="form-error">{{ form.profile_picture.errors }}</p>
-                    {% endif %}
                 </div>
                 <div class="save-btn">
                     <button type="submit" class="btn btn-success">💾 Kaydet</button>
@@ -448,7 +449,7 @@
             </div>
         </div>
 
-        <!-- Aktif Kullanıcılar -->
+                <!-- Aktif Kullanıcılar -->
         <div class="panel active-users">
             <h2>Aktif Kullanıcılar</h2>
             <div class="search-form">
@@ -462,7 +463,7 @@
                     <li>
                         <span>{{ u.username }}</span>
                         <div>
-                            <span class="status-circle {% if user_status|u.id %}active{% else %}inactive{% endif %}"></span>
+                            <span class="status-circle active"></span>
                             <a href="{% url 'user_profile' u.username %}" class="btn btn-success">👤 Profil</a>
                         </div>
                     </li>
@@ -472,19 +473,19 @@
             </ul>
             <!-- Sayfalama -->
             <div class="pagination">
-                <span class="page-num {% if not users_page.has_previous %}disabled{% endif %}">
-                    {% if users_page.has_previous %}
-                        <a href="?page_active={{ users_page.previous_page_number }}&q={{ search_query }}">Önceki</a>
+                <span class="page-num {% if not active_users_page.has_previous %}disabled{% endif %}">
+                    {% if active_users_page.has_previous %}
+                        <a href="?page_active={{ active_users_page.previous_page_number }}&q={{ search_query }}">Önceki</a>
                     {% else %}
                         <span>Önceki</span>
                     {% endif %}
                 </span>
                 <span class="page-num">
-                    Sayfa {{ users_page.number }} / {{ users_page.paginator.num_pages }}
+                    Sayfa {{ active_users_page.number }} / {{ active_users_page.paginator.num_pages }}
                 </span>
-                <span class="page-num {% if not users_page.has_next %}disabled{% endif %}">
-                    {% if users_page.has_next %}
-                        <a href="?page_active={{ users_page.next_page_number }}&q={{ search_query }}">Sonraki</a>
+                <span class="page-num {% if not active_users_page.has_next %}disabled{% endif %}">
+                    {% if active_users_page.has_next %}
+                        <a href="?page_active={{ active_users_page.next_page_number }}&q={{ search_query }}">Sonraki</a>
                     {% else %}
                         <span>Sonraki</span>
                     {% endif %}
@@ -537,7 +538,7 @@
                                 <div class="sender-info">Öneren: {{ rec_book.sender.username }}</div>
                             {% endif %}
                             {% if rec_book.image %}
-                                <br><img src="{{ rec_book.image.url }}" alt="{{ rec_book.title }}">
+                                <br><img src="{{ rec_book.image }}" alt="{{ rec_book.title }}">
                             {% endif %}
                             {% if rec_book.info_link %}
                                 <br><a href="{{ rec_book.info_link }}" target="_blank">Daha Fazla Bilgi</a>
@@ -600,16 +601,6 @@
         function handleFileChange() {
             const file = fileInput.files[0];
             if (file) {
-                if (!file.type.startsWith('image/')) {
-                    alert('Lütfen bir resim dosyası seçin.');
-                    fileInput.value = '';
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) { // 5MB sınırı
-                    alert('Dosya boyutu 5MB\'dan büyük olamaz.');
-                    fileInput.value = '';
-                    return;
-                }
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
