@@ -352,14 +352,13 @@ def send_message(request, username):
         'all_messages': all_messages,
     })
 
-# Logger'ı tanımla
 logger = logging.getLogger(__name__)
 
 @login_required
 def profilim(request):
     user = request.user
     
-    # Kullanıcı profili yoksa oluştur (get_or_create ile güvenli)
+    # Kullanıcı profili yoksa oluştur
     profile, created = UserProfile.objects.get_or_create(user=user)
     if created:
         logger.info(f"Yeni profil oluşturuldu: {user.username}")
@@ -370,12 +369,10 @@ def profilim(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Profiliniz güncellendi!")
-            # Cloudinary URL'sini güvenli şekilde log'la
-            profile_picture_url = profile.profile_picture.url if profile.profile_picture else 'Yok'
-            logger.info(f"Profil güncellendi: {user.username}, Fotoğraf: {profile_picture_url}")
+            logger.info(f"Profil güncellendi: {user.username}, Fotoğraf: {profile.profile_picture.url if profile.profile_picture else 'Yok'}")
             return redirect('profilim')
         else:
-            messages.error(request, "Profil güncellenirken bir hata oluştu.")
+            messages.error(request, "Profil güncellenirken hata oluştu. Lütfen formu kontrol edin.")
             logger.error(f"Form hataları: {form.errors}")
     else:
         form = UserProfileForm(instance=profile)
@@ -383,15 +380,10 @@ def profilim(request):
     # Toplam kullanıcı sayısı
     total_users = User.objects.count()
 
-    # Aktif kullanıcılar (oturumu açık olanlar)
+    # Aktif kullanıcılar
     active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
     user_ids = [session.get_decoded().get('_auth_user_id') for session in active_sessions if session.get_decoded().get('_auth_user_id')]
     active_users = User.objects.filter(id__in=user_ids)
-
-    # Hata ayıklama: Oturum açık kullanıcıları kontrol et
-    all_users = User.objects.all()[:5]  # İlk 5 kullanıcıyı al
-    for u in all_users:
-        print(f"Kullanıcı: {u.username}, Last Login: {u.last_login}")
 
     # Arama ve kullanıcı filtreleme
     search_query = request.GET.get('q', '')
@@ -401,7 +393,7 @@ def profilim(request):
         users = active_users
 
     # Her kullanıcı için aktiflik durumunu belirle
-    user_status = {u.id: u.id in user_ids for u in users}  # Aktifse True, pasifse False
+    user_status = {u.id: u.id in user_ids for u in users}
 
     # Aktif kullanıcılar için sayfalama
     users_paginator = Paginator(users, 5)
@@ -424,11 +416,11 @@ def profilim(request):
     rec_page_number = request.GET.get('page', 1)
     recommended_books_page = rec_paginator.get_page(rec_page_number)
 
-    # Hata ayıklama
-    print(f"Aktif kullanıcı sayısı: {active_users.count()}")
-    print(f"Filtrelenmiş kullanıcı sayısı: {users.count()}")
+    # Hata ayıklama logları
+    logger.debug(f"Aktif kullanıcı sayısı: {active_users.count()}")
+    logger.debug(f"Filtrelenmiş kullanıcı sayısı: {users.count()}")
     for u in users:
-        print(f"Arama sonucu kullanıcı: {u.username}, Aktif mi: {user_status[u.id]}")
+        logger.debug(f"Arama sonucu kullanıcı: {u.username}, Aktif mi: {user_status[u.id]}")
 
     context = {
         'user': user,
@@ -444,7 +436,7 @@ def profilim(request):
         'recommended_to_me': recommended_books_page,
         'user_status': user_status,
     }
-    return render(request, 'profilim.html', context)
+    return render(request, 'account/profilim.html', context)
 
 @login_required
 def user_profile(request, username):
