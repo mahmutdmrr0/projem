@@ -12,11 +12,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
 ]
 
-# Medya ve statik dosyaları her zaman sun
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-# Medya dosyalarını DEBUG=False iken sunmak için
-if not settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]
+# Yalnızca DEBUG=True için statik ve medya dosyalarını sun
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

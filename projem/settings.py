@@ -13,12 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['web-production-c8a3.up.railway.app', '.railway.app', 'localhost', '127.0.0.1']
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+ALLOWED_HOSTS = ['example.com', 'localhost', '127.0.0.1', 'web-production-c8a3.up.railway.app']
+
 SITE_URL = 'https://web-production-c8a3.up.railway.app'
 CSRF_TRUSTED_ORIGINS = ['https://web-production-c8a3.up.railway.app']
 
