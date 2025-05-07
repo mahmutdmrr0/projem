@@ -82,7 +82,7 @@
 
 | Login | Register | Şifre Değiştir | Şifre Hatırlama |
 |-------|----------|----------------|-----------------|
-| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-değiştirme.jpg) | ![](screenshots/password-not-remember.jpg) |
+| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-degistirme.jpg) | ![](screenshots/password-not-remember.jpg) |
 
 | Dinlenme Modül | Relax Sayfası | Hakkında Sayfası |
 |----------------|---------------|------------------|
