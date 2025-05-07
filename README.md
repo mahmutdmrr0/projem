@@ -78,11 +78,11 @@
 
 | Şikayet Sayfası | Admin Şikayet | Arama | Navbar |
 |-----------------|----------------|-------|--------|
-| ![](screenshots/şikayet-sayfası.jpg) | ![](screenshots/admin-şikayet.jpg) | ![](screenshots/search-page.jpg) | ![](screenshots/navbar.jpg) |
+| ![](screenshots/sikayet-sayfası.jpg) | ![](screenshots/admin-sikayet.jpg) | ![](screenshots/search-page.jpg) | ![](screenshots/navbar.jpg) |
 
 | Login | Register | Şifre Değiştir | Şifre Hatırlama |
 |-------|----------|----------------|-----------------|
-| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/şifre-değiştirme.jpg) | ![](screenshots/password-not-remember.jpg) |
+| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-değiştirme.jpg) | ![](screenshots/password-not-remember.jpg) |
 
 | Dinlenme Modül | Relax Sayfası | Hakkında Sayfası |
 |----------------|---------------|------------------|
