@@ -34,63 +34,75 @@
 
 ## 📸 Ekran Görüntüleri
 
-### 🏠 Anasayfa
+### 🏠 Anasayfa ve Navigasyon
 
-| Anasayfa 1 | Anasayfa 2 | Anasayfa 3 |
-|-----------|------------|------------|
-| ![](screenshots/anasayfa-1.jpg) | ![](screenshots/anasayfa-2.jpg) | ![](screenshots/anasayfa-3.jpg) |
-
----
-
-### 📖 Kitap Detayları
-
-| Detay 1 | Detay 2 | Detay 3 |
-|--------|---------|---------|
-| ![](screenshots/detay-sayfası-1.jpg) | ![](screenshots/detay-sayfası-2.jpg) | ![](screenshots/detay-sayfası-3.jpg) |
-
-| Detay 4 | Kitaplar Sayfası | Kitaplık |
-|--------|-------------------|----------|
-| ![](screenshots/detay-sayfası-4.jpg) | ![](screenshots/book-list.jpg) | ![](screenshots/bookcase-page.jpg) |
+| Anasayfa 1 | Anasayfa 2 | Navbar | Footer |
+|------------|------------|--------|--------|
+| ![](screenshots/anasayfa-1.jpg) | ![](screenshots/anasayfa-2.jpg) | ![](screenshots/navbar.jpg) | ![](screenshots/footer.jpg) |
 
 ---
 
-### 💬 Chatbot & Kategoriler
+### 📚 Kitap ve Kategoriler
 
-| Chatbot 1 | Chatbot 2 | Kategoriler | Kategoriye Göre Liste |
-|-----------|-----------|-------------|------------------------|
-| ![](screenshots/chatbot-1.jpg) | ![](screenshots/chatbot-2.jpg) | ![](screenshots/category-page.jpg) | ![](screenshots/kategoriye-göre-listelenen-kitaplar.jpg) |
+| Kategori Sayfası | Kitap Listesi | Kitaplık Sayfası | Kitaplar Sayfası |
+|------------------|---------------|------------------|------------------|
+| ![](screenshots/category-page.jpg) | ![](screenshots/book-list.jpg) | ![](screenshots/bookcase-page.jpg) | ![](screenshots/kitaplar-sayfası.jpg) |
 
 ---
 
-### 👤 Profil ve Sosyal
+### 📘 Kitap Detay Sayfası
 
-| Profil 1 | Profil 2 | Arkadaşlar 1 | Arkadaşlar 2 |
-|----------|----------|--------------|--------------|
+| Detay Sayfası 1 | Detay Sayfası 2 | Detay Sayfası 3 | Detay Sayfası 4 |
+|-----------------|-----------------|-----------------|-----------------|
+| ![](screenshots/detay-sayfası-1.jpg) | ![](screenshots/detay-sayfası-2.jpg) | ![](screenshots/detay-sayfası-3.jpg) | ![](screenshots/detay-sayfası-4.jpg) |
+
+---
+
+### 🤖 Chatbot ve Arama
+
+| Chatbot 1 | Chatbot 2 | Arama Sayfası |
+|-----------|-----------|---------------|
+| ![](screenshots/chatbot-1.jpg) | ![](screenshots/chatbot-2.jpg) | ![](screenshots/search-page.jpg) |
+
+---
+
+### 👤 Profil ve Arkadaşlık
+
+| Profil 1 | Profil 2 | Arkadaşlar Sayfası 1 | Arkadaşlar Sayfası 2 |
+|----------|----------|---------------------|----------------------|
 | ![](screenshots/profil-1.jpg) | ![](screenshots/profil-2.jpg) | ![](screenshots/friends-page-1.jpg) | ![](screenshots/friends-page-2.jpg) |
 
-| Arkadaşlar 3 | Arkadaşlar 4 | Sohbetler |
-|--------------|--------------|-----------|
+| Arkadaşlar Sayfası 3 | Arkadaşlar Sayfası 4 | Arkadaşlarla Sohbet |
+|----------------------|----------------------|--------------------|
 | ![](screenshots/friends-page-3.jpg) | ![](screenshots/friends-page-4.jpg) | ![](screenshots/friends-chat.jpg) |
 
 ---
 
-### 🛠️ Yönetim & Diğer
+### 🔐 Giriş, Kayıt ve Şifre İşlemleri
 
-| Şikayet Sayfası | Admin Şikayet | Arama | Navbar |
-|-----------------|----------------|-------|--------|
-| ![](screenshots/sikayet-sayfası.jpg) | ![](screenshots/admin-sikayet.jpg) | ![](screenshots/search-page.jpg) | ![](screenshots/navbar.jpg) |
-
-| Login | Register | Şifre Değiştir | Şifre Hatırlama |
-|-------|----------|----------------|-----------------|
-| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-degistirme.jpg) | ![](screenshots/password-not-remember.jpg) |
-
-| Dinlenme Modül | Relax Sayfası | Hakkında Sayfası |
-|----------------|---------------|------------------|
-| ![](screenshots/relax-modül.jpg) | ![](screenshots/relax-page.jpg) | ![](screenshots/about-page.jpg) |
+| Giriş | Kayıt | Şifre Değiştirme | Şifremi Unuttum |
+|-------|-------|------------------|-----------------|
+| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-değiştirme.jpg) | ![](screenshots/password-not-remember.jpg) |
 
 ---
 
-### 🎞️ Animasyon
+### ⚙️ Yönetici Paneli ve Şikayetler
+
+| Admin Şikayet Paneli | Kullanıcı Şikayet Sayfası | Rapor Sayfası |
+|----------------------|---------------------------|---------------|
+| ![](screenshots/admin-sikayet.jpg) | ![](screenshots/report-page.jpg) | ![](screenshots/sikayet-sayfası.jpg) |
+
+---
+
+### 🌿 Dinlenme Modülü ve Hakkında
+
+| Dinlenme Modülü | Dinlenme Sayfası | Hakkında Sayfası |
+|-----------------|------------------|------------------|
+| ![](screenshots/relas-modul.jpg) | ![](screenshots/relax-page.jpg) | ![](screenshots/about-page.jpg) |
+
+---
+
+### 🎞️ Uygulama Animasyonu
 
 <p align="center">
   <img src="screenshots/Animasyon.gif" alt="Animasyon">
@@ -100,13 +112,28 @@
 
 ## 🔗 Canlı Demo
 
-**MADBOOK’u canlı görmek için tıklayın:**
-
-👉 [web-production-c8a3.up.railway.app/library/](https://web-production-c8a3.up.railway.app/library/)
+🎯 **Projeyi canlı inceleyin:**  
+👉 [MADBOOK Canlı Site](https://web-production-c8a3.up.railway.app/library/)
 
 ---
 
-## 📬 İletişim
+## 💼 Kullanılan Teknolojiler
 
-- **GitHub**: [mahmutdmrr0](https://github.com/mahmutdmrr0)  
-- **E-posta**: [mahmut.demir0024@gmail.com](mailto:mahmut.demir0024@gmail.com)
+- Python 3.11
+- Django 4.2
+- PostgreSQL
+- Railway
+- HTML5, CSS3, JavaScript
+- Bootstrap ve Tailwind
+- Pillow, reCAPTCHA, Django Messages
+
+---
+
+## 🛠️ Kurulum
+
+```bash
+git clone https://github.com/mahmutdmrr0/madbook.git
+cd madbook
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
