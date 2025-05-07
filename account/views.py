@@ -216,11 +216,11 @@ def send_welcome_email(user_email):
                     <p><strong>Şimdi başla!</strong> Kütüphanemizin kapıları senin için ardına kadar açık.</p>
                 </div>
                 <div style="text-align: center; margin: 40px 0;">
-                    <a href="https://madbook.blogu.tc/" class="cta-button"><i class="fas fa-book-open"></i> Hemen Keşfet</a>
+                    <a href="https://web-production-c8a3.up.railway.app/library/" class="cta-button"><i class="fas fa-book-open"></i> Hemen Keşfet</a>
                 </div>
                 <p>Her sayfa yeni bir dünya. Madbook ile okumanın tadını çıkar!</p>
                 <div class="footer">
-                    <p><a href="https://madbook.blogu.tc/">Madbook Kütüphanesi</a> © 2025</p>
+                    <p><a href="https://web-production-c8a3.up.railway.app/library/">Madbook Kütüphanesi</a> © 2025</p>
                     <p>Soruların mı var? Bize ulaş: <a href="mailto:mahmut.demir0024@gmail.com">mahmut.demir0024@gmail.com</a></p>
                 </div>
             </div>

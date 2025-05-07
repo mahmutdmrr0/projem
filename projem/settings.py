@@ -15,10 +15,10 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['example.com', 'localhost', '127.0.0.1', 'web-production-c8a3.up.railway.app','madbook.blogu.tc']
+ALLOWED_HOSTS = ['example.com', 'localhost', '127.0.0.1', 'web-production-c8a3.up.railway.app']
 
-SITE_URL = 'https://madbook.blogu.tc'
-CSRF_TRUSTED_ORIGINS = ['https://madbook.blogu.tc']
+SITE_URL = 'https://web-production-c8a3.up.railway.app'
+CSRF_TRUSTED_ORIGINS = ['https://web-production-c8a3.up.railway.app']
 
 # Application definition
 INSTALLED_APPS = [
