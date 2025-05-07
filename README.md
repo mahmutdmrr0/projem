@@ -98,7 +98,7 @@
 
 | <span style="color: #2ecc71">Dinlenme Modülü</span> | <span style="color: #2ecc71">Dinlenme Sayfası</span> | <span style="color: #2ecc71">Hakkında Sayfası</span> |
 |-----------------------------|-----------------------------|-----------------------------|
-| ![Dinlenme Modülü](screenshots/relax-modul.jpg) | ![Dinlenme Sayfası](screenshots/relax-page.jpg) | ![Hakkında Sayfası](screenshots/about-page.jpg) |
+| ![Dinlenme Modülü](screenshots/relas-modul.jpg) | ![Dinlenme Sayfası](screenshots/relax-page.jpg) | ![Hakkında Sayfası](screenshots/about-page.jpg) |
 
 ---
 
