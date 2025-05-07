@@ -44,9 +44,9 @@
 
 ### 📚 Kitap ve Kategoriler
 
-| Kategori Sayfası | Kitap Listesi | Kitaplık Sayfası | Kitaplar Sayfası |
-|------------------|---------------|------------------|------------------|
-| ![](screenshots/category-page.jpg) | ![](screenshots/book-list.jpg) | ![](screenshots/bookcase-page.jpg) | ![](screenshots/kitaplar-sayfası.jpg) |
+| Kategori Sayfası | Kitap Listesi | Kitaplık Sayfası | 
+|------------------|---------------|------------------|
+| ![](screenshots/category-page.jpg) | ![](screenshots/book-list.jpg) | ![](screenshots/bookcase-page.jpg) | 
 
 ---
 
@@ -82,15 +82,15 @@
 
 | Giriş | Kayıt | Şifre Değiştirme | Şifremi Unuttum |
 |-------|-------|------------------|-----------------|
-| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-değiştirme.jpg) | ![](screenshots/password-not-remember.jpg) |
+| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/sifre-degistirme.jpg) | ![](screenshots/password-not-remember.jpg) |
 
 ---
 
 ### ⚙️ Yönetici Paneli ve Şikayetler
 
-| Admin Şikayet Paneli | Kullanıcı Şikayet Sayfası | Rapor Sayfası |
-|----------------------|---------------------------|---------------|
-| ![](screenshots/admin-sikayet.jpg) | ![](screenshots/report-page.jpg) | ![](screenshots/sikayet-sayfası.jpg) |
+| Admin Şikayet Paneli | Kullanıcı Şikayet Sayfası 
+|----------------------|---------------------------
+| ![](screenshots/admin-sikayet.jpg) | ![](screenshots/report-page.jpg) | 
 
 ---
 
