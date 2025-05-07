@@ -48,6 +48,3 @@ MADBOOK’u canlı görmek ister misiniz? Hemen ziyaret edin:
 - **GitHub**: [mahmutdmrr0](https://github.com/mahmutdmrr0)
 - **E-posta**: mahmut.demir0024@gmail.com
 
-<p align="center">
-  <i>MADBOOK: Kitaplar ve dostluklar için, Kanzi tarafından kodlandı. 📚💪</i>
-</p>
