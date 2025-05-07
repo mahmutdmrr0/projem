@@ -105,7 +105,7 @@
 ### 🎞️ <span style="color: #27ae60">Uygulama Animasyonu</span>
 
 <p align="center">
-  <img src="screenshots/Animasyon.gif" alt="Animasyon" width="400" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <img src="screenshots/Animasyon.gif" alt="Animasyon" width="150" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
 </p>
 
 ---
