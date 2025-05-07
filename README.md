@@ -15,36 +15,98 @@
   MADBOOK, kitap tutkunları için bir sosyal cennet! 📖 Django ile geliştirilmiş bu platformda, kitapları okuyup yorum yapabilir, yıldız verebilir, arkadaşlarınızla mesajlaşabilir ve şikayet bildirebilirsiniz. Her 1 dakikada gözlerinizi koruyan dinlenme modalıyla, hem sosyal hem sağlıklı! Railway’de PostgreSQL ile çalışıyor, reCAPTCHA ile güvenli.
 </p>
 
+---
+
 ## 🚀 Özellikler
-- 📖 **Kitap Detayları**: Başlık, yazar, özet ve daha fazlasını keşfedin.
-- ⭐ **Yıldız Derecelendirme**: Kitaplara 1’den 5’e yıldız verin.
-- 💬 **Yorum Sistemi**: Düşüncelerinizi paylaşın, diğer okuyucularla tartışın.
-- ⏰ **Dinlenme Modalı**: Her 1 dakikada göz sağlığınız için mola uyarısı.
-- 🔒 **reCAPTCHA Güvenliği**: Yorum ve formlarınız spam’den korunuyor.
-- 📩 **Mesajlaşma**: Okunmamış mesaj bildirimleriyle sohbet edin.
-- 🤝 **Arkadaşlık İstekleri**: Yeni kitap dostları edinin.
-- 🚨 **Şikayet Sistemi**: Çözülmemiş şikayetleri takip edin.
-- 🛠️ **Django Admin Paneli**: Kolay içerik yönetimi.
-- ☁️ **Railway Deployment**: PostgreSQL ile hızlı ve güvenilir.
+
+- 📖 **Kitap Detayları**: Başlık, yazar, özet ve daha fazlası.
+- ⭐ **Yıldız Derecelendirme**: Kitaplara puan ver.
+- 💬 **Yorum Sistemi**: Yorum yap, tartışmalara katıl.
+- ⏰ **Dinlenme Modalı**: Göz sağlığınız için mola uyarısı.
+- 🔒 **reCAPTCHA**: Spam koruması.
+- 📩 **Mesajlaşma**: Okunmamış mesaj bildirimleri.
+- 🤝 **Arkadaşlık Sistemi**: Yeni kitap dostları edin.
+- 🚨 **Şikayet Paneli**: Bildirim ve yönetim ekranı.
+- 🛠️ **Admin Panel**: İçerik kontrolü.
+- ☁️ **Railway Deployment**: Hızlı ve güvenilir sunum.
+
+---
 
 ## 📸 Ekran Görüntüleri
-| Anasayfa 1           | Anasayfa 2           | Anasayfa 3           | Detay Sayfası 1      | Detay Sayfası 2      | Detay Sayfası 3      |
-|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
-| ![Anasayfa 1](screenshots/anasayfa-1.jpg) | ![Anasayfa 2](screenshots/anasayfa-2.jpg) | ![Anasayfa 3](screenshots/anasayfa-3.jpg) | ![Detay Sayfası 1](screenshots/detay-sayfası-1.jpg) | ![Detay Sayfası 2](screenshots/detay-sayfası-2.jpg) | ![Detay Sayfası 3](screenshots/detay-sayfası-3.jpg) |
 
-| Detay Sayfası 4      | Chatbot 1            | Chatbot 2            | Kategoriler          | Kategoriye Göre Kitaplar | Kitaplar Sayfası     |
-|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
-| ![Detay Sayfası 4](screenshots/detay-sayfası-4.jpg) | ![Chatbot 1](screenshots/chatbot-1.jpg) | ![Chatbot 2](screenshots/chatbot-2.jpg) | ![Kategoriler](screenshots/kategoriler.jpg) | ![Kategoriye Göre Kitaplar](screenshots/kategoriye-göre-listelenen-kitaplar.jpg) | ![Kitaplar Sayfası](screenshots/kitaplar-sayfası.jpg) |
+### 🏠 Anasayfa
 
-| Kitaplık Sayfası     | Profil 1             | Profil 2             | Şikayet Sayfası      | Animasyon (GIF)      | Trans 1              |
-|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
-| ![Kitaplık Sayfası](screenshots/kitaplık-sayfası.jpg) | ![Profil 1](screenshots/profil-1.jpg) | ![Profil 2](screenshots/profil-2.jpg) | ![Şikayet Sayfası](screenshots/şikayet-sayfası.jpg) | ![Animasyon](screenshots/Animasyon.gif) | ![Trans 1](screenshots/trans1.png) |
+| Anasayfa 1 | Anasayfa 2 | Anasayfa 3 |
+|-----------|------------|------------|
+| ![](screenshots/anasayfa-1.jpg) | ![](screenshots/anasayfa-2.jpg) | ![](screenshots/anasayfa-3.jpg) |
+
+---
+
+### 📖 Kitap Detayları
+
+| Detay 1 | Detay 2 | Detay 3 |
+|--------|---------|---------|
+| ![](screenshots/detay-sayfası-1.jpg) | ![](screenshots/detay-sayfası-2.jpg) | ![](screenshots/detay-sayfası-3.jpg) |
+
+| Detay 4 | Kitaplar Sayfası | Kitaplık |
+|--------|-------------------|----------|
+| ![](screenshots/detay-sayfası-4.jpg) | ![](screenshots/book-list.jpg) | ![](screenshots/bookcase-page.jpg) |
+
+---
+
+### 💬 Chatbot & Kategoriler
+
+| Chatbot 1 | Chatbot 2 | Kategoriler | Kategoriye Göre Liste |
+|-----------|-----------|-------------|------------------------|
+| ![](screenshots/chatbot-1.jpg) | ![](screenshots/chatbot-2.jpg) | ![](screenshots/category-page.jpg) | ![](screenshots/kategoriye-göre-listelenen-kitaplar.jpg) |
+
+---
+
+### 👤 Profil ve Sosyal
+
+| Profil 1 | Profil 2 | Arkadaşlar 1 | Arkadaşlar 2 |
+|----------|----------|--------------|--------------|
+| ![](screenshots/profil-1.jpg) | ![](screenshots/profil-2.jpg) | ![](screenshots/friends-page-1.jpg) | ![](screenshots/friends-page-2.jpg) |
+
+| Arkadaşlar 3 | Arkadaşlar 4 | Sohbetler |
+|--------------|--------------|-----------|
+| ![](screenshots/friends-page-3.jpg) | ![](screenshots/friends-page-4.jpg) | ![](screenshots/friends-chat.jpg) |
+
+---
+
+### 🛠️ Yönetim & Diğer
+
+| Şikayet Sayfası | Admin Şikayet | Arama | Navbar |
+|-----------------|----------------|-------|--------|
+| ![](screenshots/şikayet-sayfası.jpg) | ![](screenshots/admin-şikayet.jpg) | ![](screenshots/search-page.jpg) | ![](screenshots/navbar.jpg) |
+
+| Login | Register | Şifre Değiştir | Şifre Hatırlama |
+|-------|----------|----------------|-----------------|
+| ![](screenshots/login.jpg) | ![](screenshots/register.jpg) | ![](screenshots/şifre-değiştirme.jpg) | ![](screenshots/password-not-remember.jpg) |
+
+| Dinlenme Modül | Relax Sayfası | Hakkında Sayfası |
+|----------------|---------------|------------------|
+| ![](screenshots/relax-modül.jpg) | ![](screenshots/relax-page.jpg) | ![](screenshots/about-page.jpg) |
+
+---
+
+### 🎞️ Animasyon
+
+<p align="center">
+  <img src="screenshots/Animasyon.gif" alt="Animasyon">
+</p>
+
+---
 
 ## 🔗 Canlı Demo
-MADBOOK’u canlı görmek ister misiniz? Hemen ziyaret edin:  
+
+**MADBOOK’u canlı görmek için tıklayın:**
+
 👉 [web-production-c8a3.up.railway.app/library/](https://web-production-c8a3.up.railway.app/library/)
 
-## 📬 İletişim
-- **GitHub**: [mahmutdmrr0](https://github.com/mahmutdmrr0)
-- **E-posta**: mahmut.demir0024@gmail.com
+---
 
+## 📬 İletişim
+
+- **GitHub**: [mahmutdmrr0](https://github.com/mahmutdmrr0)  
+- **E-posta**: [mahmut.demir0024@gmail.com](mailto:mahmut.demir0024@gmail.com)
