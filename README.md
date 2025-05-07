@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="screenshots/madbook_logo.png" alt="MADBOOK Logo" width="200"/>
+  <img src="screenshots/trans1.png" alt="MADBOOK Logo" width="200"/>
 </p>
 
 <h1 align="center">MADBOOK: Kitap Aşıkları ve Sosyal Bağlar 📚</h1>
