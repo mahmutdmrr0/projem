@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  MADBOOK, kitap tutkunları için bir sosyal cennet! 📖 Django ile geliştirilmiş bu platformda, kitapları okuyup yorum yapabilir, yıldız verebilir, arkadaşlarınızla mesajlaşabilir ve şikayet bildirebilirsiniz. Her 1 dakikada gözlerinizi koruyan dinlenme modalıyla, hem sosyal hem sağlıklı! 😎 Railway’de PostgreSQL ile çalışıyor, reCAPTCHA ile güvenli. Kanzi tarafından 💪 sevgiyle kodlandı!
+  MADBOOK, kitap tutkunları için bir sosyal cennet! 📖 Django ile geliştirilmiş bu platformda, kitapları okuyup yorum yapabilir, yıldız verebilir, arkadaşlarınızla mesajlaşabilir ve şikayet bildirebilirsiniz. Her 1 dakikada gözlerinizi koruyan dinlenme modalıyla, hem sosyal hem sağlıklı! Railway’de PostgreSQL ile çalışıyor, reCAPTCHA ile güvenli.
 </p>
 
 ## 🚀 Özellikler
