@@ -35,3 +35,9 @@ env/
 # Geçici dosyalar
 *.cache
 *.tmp
+screenshots/ 
+*.jpg 
+*.png 
+*.gif 
+*.pdf 
+*.log
